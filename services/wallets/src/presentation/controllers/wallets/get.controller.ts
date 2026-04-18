@@ -6,9 +6,10 @@ import {
 } from "@/presentation/dtos/wallet/get-me.dto";
 
 import { GetWalletMeQueryBuilder } from "@/infrastructure/query-builders/wallets/get-me";
-import { ApiOkResponse } from "@nestjs/swagger";
+import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 @Controller()
+@ApiTags("Wallets")
 export class GetWalletController {
   constructor(
     private readonly getWalletMeQueryBuilder: GetWalletMeQueryBuilder,
