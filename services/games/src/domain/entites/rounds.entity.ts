@@ -1,0 +1,72 @@
+import { v4 as uuidv4 } from "uuid";
+import { Optional } from "../core/optional";
+import { RoundStatus } from "../enums/rounds";
+
+export type RoundProps = {
+  id: string;
+  status: RoundStatus;
+  crashMultiplier?: number;
+  startAt?: Date;
+  endedAt?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+};
+
+export class Round {
+  private _id: string;
+  private props: RoundProps;
+
+  private constructor(props: RoundProps) {
+    this._id = props.id ?? uuidv4();
+    this.props = {
+      ...props,
+      id: this._id,
+    };
+  }
+
+  get id() {
+    return this._id;
+  }
+
+  get status() {
+    return this.props.status;
+  }
+
+  get crashMultiplier() {
+    return this.props.crashMultiplier;
+  }
+
+  get startAt() {
+    return this.props.startAt;
+  }
+
+  get endedAt() {
+    return this.props.endedAt;
+  }
+
+  get createdAt() {
+    return this.props.createdAt;
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt;
+  }
+
+  static create(
+    props: Optional<
+      RoundProps,
+      | "id"
+      | "status"
+      | "crashMultiplier"
+      | "startAt"
+      | "endedAt"
+      | "createdAt"
+      | "updatedAt"
+    >,
+  ) {
+    return new Round({
+      ...props,
+      status: props.status ?? "PENDING",
+    } as RoundProps);
+  }
+}
