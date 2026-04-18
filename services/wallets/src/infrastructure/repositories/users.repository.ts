@@ -3,6 +3,7 @@ import { PrismaService } from "../databases/prisma.service";
 
 import type { UsersRepository } from "../../domain/repositories/users.repository";
 import { User } from "@/domain/entites/users.entity";
+import { UsersMapper } from "../mappers/users.mapper";
 
 @Injectable()
 export class UsersRepositoryImpl implements UsersRepository {
@@ -12,36 +13,20 @@ export class UsersRepositoryImpl implements UsersRepository {
     const user = await this.prisma.users.findUnique({
       where: { id },
     });
-    return user
-      ? User.create({
-          id: user.id,
-          email: user.email ?? undefined,
-          name: user.name ?? undefined,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt,
-        })
-      : null;
+    return user ? UsersMapper.toEntity(user) : null;
   }
 
   async upsert(user: User) {
+    const prismaUser = UsersMapper.toPrisma(user);
+    
     const newUserData = await this.prisma.users.upsert({
       where: { id: user.id },
-      create: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-      },
+      create: prismaUser,
       update: {
-        email: user.email,
-        name: user.name,
+        email: prismaUser.email,
+        name: prismaUser.name,
       },
     });
-    return User.create({
-      id: newUserData.id,
-      email: newUserData.email ?? undefined,
-      name: newUserData.name ?? undefined,
-      createdAt: newUserData.createdAt,
-      updatedAt: newUserData.updatedAt,
-    });
+    return UsersMapper.toEntity(newUserData);
   }
 }

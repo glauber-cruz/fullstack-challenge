@@ -3,6 +3,8 @@ import type { WalletsRepository } from "../../domain/repositories/wallets.reposi
 
 import { Injectable } from "@nestjs/common";
 import { Wallet } from "@/domain/entites/wallets.entity";
+
+import { WalletsMapper } from "../mappers/wallets.mapper";
 @Injectable()
 export class WalletsRepositoryImpl implements WalletsRepository {
   constructor(private readonly prisma: PrismaService) {}
@@ -17,11 +19,7 @@ export class WalletsRepositoryImpl implements WalletsRepository {
 
   async create(wallet: Wallet): Promise<void> {
     await this.prisma.wallets.create({
-      data: {
-        id: wallet.id,
-        userId: wallet.userId,
-        balance: wallet.balance,
-      },
+      data: WalletsMapper.toPrisma(wallet),
     });
   }
 }
