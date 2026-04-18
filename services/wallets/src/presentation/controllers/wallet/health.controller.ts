@@ -4,7 +4,7 @@ import { HealthCheckResponseDto } from "../../dtos/wallet/health-check-response.
 @Controller()
 export class HealthController {
   @Get("health")
-  check(): HealthCheckResponseDto {
+  handle(): HealthCheckResponseDto {
     return { status: "ok", service: "wallets" };
   }
 }
