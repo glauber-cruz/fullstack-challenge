@@ -6,10 +6,11 @@ import { HealthController } from "./wallets/health.controller";
 
 import { CreateWalletUseCase } from "@/application/use-cases/wallets/create";
 import { RepositoryModule } from "@/infrastructure/repositories/repository.module";
+import { GetWalletMeQueryBuilder } from "@/infrastructure/query-builders/wallets/get-me";
 
 @Module({
   imports: [RepositoryModule],
   controllers: [CreateWalletController, GetWalletController, HealthController],
-  providers: [CreateWalletUseCase],
+  providers: [CreateWalletUseCase, GetWalletMeQueryBuilder],
 })
 export class ControllersModule {}
