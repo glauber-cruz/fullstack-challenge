@@ -11,6 +11,6 @@ export class CreateWalletController {
 
   @Post("/")
   async handle(@Req() req: AuthenticatedRequest) {
-    await this.createWalletUseCase.execute(req.user.sub);
+    await this.createWalletUseCase.execute(req.user);
   }
 }

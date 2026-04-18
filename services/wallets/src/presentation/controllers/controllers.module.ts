@@ -6,12 +6,19 @@ import { HealthController } from "./wallets/health.controller";
 
 import { CreateWalletUseCase } from "@/application/use-cases/wallets/create";
 import { RepositoryModule } from "@/infrastructure/repositories/repository.module";
+
 import { GetWalletMeQueryBuilder } from "@/infrastructure/query-builders/wallets/get-me";
 import { GuardsModule } from "../guards/guards.module";
+
+import { GetOrCreateUserService } from "@/application/services/get-or-create-user.service";
 
 @Module({
   imports: [RepositoryModule, GuardsModule],
   controllers: [CreateWalletController, GetWalletController, HealthController],
-  providers: [CreateWalletUseCase, GetWalletMeQueryBuilder],
+  providers: [
+    CreateWalletUseCase,
+    GetWalletMeQueryBuilder,
+    GetOrCreateUserService,
+  ],
 })
 export class ControllersModule {}

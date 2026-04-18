@@ -26,7 +26,11 @@ export class UsersRepositoryImpl implements UsersRepository {
   async upsert(user: User) {
     const newUserData = await this.prisma.users.upsert({
       where: { id: user.id },
-      create: user,
+      create: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+      },
       update: {
         email: user.email,
         name: user.name,

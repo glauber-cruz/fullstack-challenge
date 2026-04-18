@@ -4,18 +4,24 @@ import type { WalletsRepository } from "@/domain/repositories/wallets.repository
 import { walletsRepositoryToken } from "@/domain/repositories/wallets.repository";
 
 import { ConflictException, Inject } from "@nestjs/common";
+import { KeycloakUser } from "@/infrastructure/types/keycloack";
+
+import { GetOrCreateUserService } from "@/application/services/get-or-create-user.service";
 
 export class CreateWalletUseCase {
   constructor(
     @Inject(walletsRepositoryToken)
     private readonly walletsRepository: WalletsRepository,
+    private readonly getOrCreateUserService: GetOrCreateUserService,
   ) {}
 
-  async execute(userId: string) {
-    const userHasWallet = await this.walletsRepository.userHasWallet(userId);
-    if (userHasWallet) throw new ConflictException("User already has a wallet");
+  async execute(input: KeycloakUser) {
+    const user = await this.getOrCreateUserService.execute(input);
+    const userHasWallet = await this.walletsRepository.userHasWallet(user.id);
 
-    const wallet = Wallet.create({ userId });
+    if (userHasWallet) throw new ConflictException("User already has a wallet");
+    const wallet = Wallet.create({ userId: user.id });
+    
     await this.walletsRepository.create(wallet);
   }
 }
