@@ -6,19 +6,17 @@ import {
   UseGuards,
 } from "@nestjs/common";
 
+import type { GetWalletMeResponse } from "@/presentation/dtos/wallet/get-me.dto";
 import {
   GetWalletMePresentation,
-  GetWalletMeResponse,
   GetWalletMeResponseDto,
 } from "@/presentation/dtos/wallet/get-me.dto";
 
 import { GetWalletMeQueryBuilder } from "@/infrastructure/query-builders/wallets/get-me";
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
-import {
-  AuthenticatedRequest,
-  AuthGuard,
-} from "@/presentation/guards/auth.guard";
+import type { AuthenticatedRequest } from "@/presentation/guards/auth.guard";
+import { AuthGuard } from "@/presentation/guards/auth.guard";
 
 @Controller()
 @ApiTags("Wallets")
