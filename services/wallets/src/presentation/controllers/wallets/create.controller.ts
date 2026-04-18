@@ -1,21 +1,16 @@
-import { Body, Controller, Post } from "@nestjs/common";
-import { z } from "zod";
+import { Controller, Post, Req, UseGuards } from "@nestjs/common";
 
-import { createZodDto } from "nestjs-zod";
 import { CreateWalletUseCase } from "@/application/use-cases/wallets/create";
 
-export const createCommandSchema = z.object({
-  userId: z.string(),
-});
-
-class CreateWalletBody extends createZodDto(createCommandSchema) {}
+import { AuthGuard, type AuthenticatedRequest } from "@/presentation/guards/auth.guard";
 
 @Controller()
+@UseGuards(AuthGuard)
 export class CreateWalletController {
   constructor(private readonly createWalletUseCase: CreateWalletUseCase) {}
 
   @Post("/")
-  async handle(@Body() body: CreateWalletBody) {
-    await this.createWalletUseCase.execute(body.userId);
+  async handle(@Req() req: AuthenticatedRequest) {
+    await this.createWalletUseCase.execute(req.user.sub);
   }
 }
