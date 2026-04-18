@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RoundStatus {
+  PENDING
+  RUNNING
+  CRASHED
+}
+
+model Users {
+  id        String   @id @default(uuid())
+  email     String?  @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bets Bets[]
+}
+
+model Rounds {
+  id              String      @id @default(uuid())
+  status          RoundStatus @default(PENDING)
+  crashMultiplier Float?
+  startAt         DateTime?
+  endedAt         DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  bets Bets[]
+}
+
+model Bets {
+  id                String    @id @default(uuid())
+  userId            String
+  roundId           String
+  amount            Decimal
+  cashoutMultiplier Float?
+  cashedOutAt       DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  round Rounds @relation(fields: [roundId], references: [id], onDelete: Cascade)
+  user  Users  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([roundId])
+  @@unique([userId, roundId])
+}
