@@ -9,14 +9,9 @@ import * as jwt from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
 
 import type { IncomingMessage } from "http";
+import { KeycloakUser } from "@/infrastructure/types/keycloack";
 
-export type AuthenticatedRequest = IncomingMessage & {
-  user: {
-    name: string;
-    email: string;
-    sub: string;
-  };
-};
+export type AuthenticatedRequest = IncomingMessage & { user: KeycloakUser };
 
 @Injectable()
 export class AuthGuard implements CanActivate {

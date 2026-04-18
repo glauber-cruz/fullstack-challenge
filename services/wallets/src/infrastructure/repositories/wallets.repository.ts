@@ -8,7 +8,7 @@ export class WalletsRepositoryImpl implements WalletsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
   async userHasWallet(userId: string): Promise<boolean> {
-    const wallet = await this.prisma.wallet.findFirst({
+    const wallet = await this.prisma.wallets.findFirst({
       where: { userId },
       select: {id: true, },
     });
@@ -16,7 +16,7 @@ export class WalletsRepositoryImpl implements WalletsRepository {
   }
 
   async create(wallet: Wallet): Promise<void> {
-    await this.prisma.wallet.create({
+    await this.prisma.wallets.create({
       data: {
         id: wallet.id,
         userId: wallet.userId,

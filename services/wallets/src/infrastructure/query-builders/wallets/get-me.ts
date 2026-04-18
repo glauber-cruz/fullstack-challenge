@@ -7,7 +7,7 @@ export class GetWalletMeQueryBuilder {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(userId: string): Promise<GetWalletMeResponse | null> {
-    const wallet = await this.prisma.wallet.findUnique({
+    const wallet = await this.prisma.wallets.findUnique({
       where: { userId },
       select: {
         id: true,

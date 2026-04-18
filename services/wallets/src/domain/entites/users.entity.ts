@@ -4,6 +4,7 @@ import { Optional } from "../core/optional";
 export type UserProps = {
   id: string;
   email: string;
+  name: string;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -28,6 +29,10 @@ export class User {
     return this.props.email;
   }
 
+  get name() {
+    return this.props.name;
+  }
+
   get createdAt() {
     return this.props.createdAt;
   }
@@ -36,7 +41,7 @@ export class User {
     return this.props.updatedAt;
   }
 
-  static create(props: Optional<UserProps, "id" | "createdAt" | "updatedAt">) {
+  static create(props: Optional<UserProps, "id" | "email" | "name" | "createdAt" | "updatedAt">) {
     return new User(props as UserProps);
   }
 }
