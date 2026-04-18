@@ -16,9 +16,12 @@ export class GetWalletMeQueryBuilder {
         updatedAt: true,
       },
     });
-    
+
     if (!wallet) return null;
 
-    return wallet;
+    return {
+      ...wallet,
+      balance: Number(wallet.balance),
+    };
   }
 }
