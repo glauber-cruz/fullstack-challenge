@@ -7,20 +7,20 @@
     provider = "postgresql"
   }
 
-  model User {
+  model Users {
     id        String   @id @default(uuid())
     email     String   @unique
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
-    wallet    Wallet?
+    wallet    Wallets?
   }
 
-  model Wallet {
+  model Wallets {
     id        String   @id @default(uuid())
     userId    String   @unique
     balance   Decimal @default(0)
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user      Users     @relation(fields: [userId], references: [id], onDelete: Cascade)
   }

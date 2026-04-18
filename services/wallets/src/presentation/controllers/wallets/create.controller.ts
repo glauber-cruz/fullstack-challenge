@@ -2,7 +2,7 @@ import { Body, Controller, Post } from "@nestjs/common";
 import { z } from "zod";
 
 import { createZodDto } from "nestjs-zod";
-import { CreateWalletUseCase } from "@/application/use-cases/wallet/create";
+import { CreateWalletUseCase } from "@/application/use-cases/wallets/create";
 
 export const createCommandSchema = z.object({
   userId: z.string(),
