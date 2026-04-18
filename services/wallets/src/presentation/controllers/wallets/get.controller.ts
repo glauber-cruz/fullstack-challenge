@@ -1,4 +1,11 @@
-import { Controller, Get, NotFoundException, Req } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  NotFoundException,
+  Req,
+  UseGuards,
+} from "@nestjs/common";
+
 import {
   GetWalletMePresentation,
   GetWalletMeResponse,
@@ -8,6 +15,11 @@ import {
 import { GetWalletMeQueryBuilder } from "@/infrastructure/query-builders/wallets/get-me";
 import { ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
+import {
+  AuthenticatedRequest,
+  AuthGuard,
+} from "@/presentation/guards/auth.guard";
+
 @Controller()
 @ApiTags("Wallets")
 export class GetWalletController {
@@ -16,9 +28,10 @@ export class GetWalletController {
   ) {}
 
   @Get("me")
+  @UseGuards(AuthGuard)
   @ApiOkResponse({ type: GetWalletMeResponseDto })
-  async handle(@Req() req: Request): Promise<GetWalletMeResponse> {
-    const wallet = await this.getWalletMeQueryBuilder.execute("userId");
+  async handle(@Req() req: AuthenticatedRequest): Promise<GetWalletMeResponse> {
+    const wallet = await this.getWalletMeQueryBuilder.execute(req.user.sub);
     if (!wallet) throw new NotFoundException("Wallet not found");
     return GetWalletMePresentation.toHTTP(wallet);
   }

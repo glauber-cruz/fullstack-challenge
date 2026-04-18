@@ -3,11 +3,12 @@ import { Wallet } from "@/domain/entites/wallets.entity";
 import type { WalletsRepository } from "@/domain/repositories/wallets.repository";
 import { walletsRepositoryToken } from "@/domain/repositories/wallets.repository";
 
-import { ConflictException, Inject } from "@nestjs/common";
+import { ConflictException, Inject, Injectable } from "@nestjs/common";
 import { KeycloakUser } from "@/infrastructure/types/keycloack";
 
 import { GetOrCreateUserService } from "@/application/services/get-or-create-user.service";
 
+@Injectable()
 export class CreateWalletUseCase {
   constructor(
     @Inject(walletsRepositoryToken)
