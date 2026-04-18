@@ -11,6 +11,7 @@ export class GetWalletMeQueryBuilder {
       where: { userId },
       select: {
         id: true,
+        balance: true,
         createdAt: true,
         updatedAt: true,
       },
