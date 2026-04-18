@@ -1,9 +1,7 @@
 import { Wallet } from "@/domain/entites/wallets.entity";
 
-import {
-  WalletsRepository,
-  walletsRepositoryToken,
-} from "@/domain/repositories/wallets.repository";
+import type { WalletsRepository } from "@/domain/repositories/wallets.repository";
+import { walletsRepositoryToken } from "@/domain/repositories/wallets.repository";
 
 import { ConflictException, Inject } from "@nestjs/common";
 
