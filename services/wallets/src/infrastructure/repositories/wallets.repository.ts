@@ -1,5 +1,5 @@
 import { PrismaService } from "../databases/prisma.service";
-import { WalletsRepository } from "../../domain/repositories/wallets.repository";
+import type { WalletsRepository } from "../../domain/repositories/wallets.repository";
 
 import { Injectable } from "@nestjs/common";
 import { Wallet } from "@/domain/entites/wallets.entity";
