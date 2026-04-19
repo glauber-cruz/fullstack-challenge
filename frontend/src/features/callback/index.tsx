@@ -29,5 +29,5 @@ export default function Callback() {
     getTokens();
   }, [router]);
 
-  return <div>Callback</div>;
+  return <></>;
 }
