@@ -1,5 +1,3 @@
-// Num vai dar tempo de fazer isso no backend do next pra usar httpOnly cookies 
-// então tô fazendo usando o localstorage mermo kakaka feio mas é o que tem pra hoje T-T
 export class KeycloakService {
   async generateLoginUrl() {
     const { codeVerifier, codeChallenge } = await this.generatePKCE();
@@ -13,6 +11,7 @@ export class KeycloakService {
       code_challenge: codeChallenge,
       code_challenge_method: "S256",
     });
+
     return `${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/auth?${params.toString()}`;
   }
 
@@ -52,9 +51,7 @@ export class KeycloakService {
       `${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/token`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body,
       },
     );
@@ -70,5 +67,79 @@ export class KeycloakService {
     localStorage.setItem("refresh_token", data.refresh_token);
 
     localStorage.removeItem("code_verifier");
+  }
+
+  async ensureValidToken() {
+    const accessToken = localStorage.getItem("access_token");
+    const refreshToken = localStorage.getItem("refresh_token");
+
+    if (!accessToken || !refreshToken) return false;
+
+    if (!this.isTokenExpired(accessToken)) return true;
+
+    if (this.isTokenExpired(refreshToken)) {
+      this.logout();
+      return false;
+    }
+
+    return await this.refreshTokens();
+  }
+
+  private async refreshTokens() {
+    const refreshToken = localStorage.getItem("refresh_token");
+    if (!refreshToken) return false;
+
+    const body = new URLSearchParams({
+      grant_type: "refresh_token",
+      client_id: process.env.NEXT_PUBLIC_KEYCLOAK_CLIENT_ID as string,
+      refresh_token: refreshToken,
+    });
+
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_KEYCLOAK_URL}/realms/${process.env.NEXT_PUBLIC_KEYCLOAK_REALM}/protocol/openid-connect/token`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body,
+      },
+    );
+
+    if (!response.ok) {
+      this.logout();
+      return false;
+    }
+
+    const data = await response.json();
+
+    localStorage.setItem("access_token", data.access_token);
+    localStorage.setItem("refresh_token", data.refresh_token);
+
+    return true;
+  }
+
+  private isTokenExpired(token: string) {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      return payload.exp * 1000 < Date.now();
+    } catch {
+      return true;
+    }
+  }
+
+  getUser() {
+    const accessToken = localStorage.getItem("access_token");
+    if (!accessToken || this.isTokenExpired(accessToken)) return null;
+
+    try {
+      const payload = JSON.parse(atob(accessToken.split(".")[1]));
+      return payload;
+    } catch {
+      return null;
+    }
+  }
+
+  logout() {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
   }
 }
