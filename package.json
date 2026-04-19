@@ -12,12 +12,6 @@
     "docker:prune": "docker compose down -v --rmi all --remove-orphans && docker volume prune -f"
   },
   "devDependencies": {
-    "@types/jsonwebtoken": "^9.0.10",
     "bun-types": "latest"
-  },
-  "dependencies": {
-    "jsonwebtoken": "^9.0.3",
-    "jwks-rsa": "^4.0.1",
-    "react-number-format": "^5.4.5"
   }
 }

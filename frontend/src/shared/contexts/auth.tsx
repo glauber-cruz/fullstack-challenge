@@ -1,7 +1,7 @@
 "use client";
 
 import { KeycloakService } from "@/src/services/keycloack";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useState } from "react";
 
 type User = {
   sub: string;

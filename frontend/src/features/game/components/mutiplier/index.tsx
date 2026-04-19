@@ -7,6 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/shared/components/ui/card";
+import { useState } from "react";
 import { NumericFormat } from "react-number-format";
 
 type MultiplierPanelProps = {
@@ -18,6 +19,10 @@ export function MultiplierPanel({
   multiplier,
   defaultBetValue,
 }: MultiplierPanelProps) {
+  const [betValue, setBetValue] = useState<string | undefined>(
+    String(defaultBetValue),
+  );
+
   return (
     <Card className="border-white/10 bg-white/5 py-0 shadow-2xl backdrop-blur">
       <CardHeader className="p-6 pb-2">
@@ -25,7 +30,6 @@ export function MultiplierPanel({
       </CardHeader>
 
       <CardContent className="p-6 pt-2">
-
         <div className="flex min-h-64 items-center justify-center rounded-2xl border border-cyan-300/20 bg-slate-900/70">
           <p className="text-7xl font-extrabold tracking-tight text-cyan-300 drop-shadow-[0_0_24px_rgba(34,211,238,0.9)] md:text-8xl">
             {multiplier}
@@ -34,19 +38,14 @@ export function MultiplierPanel({
 
         <div className="mt-6 grid gap-4 md:grid-cols-[1fr_auto_auto]">
           <NumericFormat
-            defaultValue={defaultBetValue}
-            decimalScale={2}
-            fixedDecimalScale
+            value={betValue}
+            prefix="R$ "
             decimalSeparator=","
             thousandSeparator="."
-            prefix="R$ "
-            allowNegative={false}
-            isAllowed={({ floatValue }) =>
-              floatValue === undefined ||
-              (floatValue >= 1 && floatValue <= 1000)
-            }
+            decimalScale={2}
+            fixedDecimalScale
             aria-label="Valor da aposta"
-            className="h-10 rounded-lg border border-white/15 bg-slate-900/70 px-3 text-sm text-slate-100 outline-none ring-cyan-300/50 placeholder:text-slate-400 focus:ring-2"
+            className="h-10 w-full rounded-lg border border-white/15 bg-slate-900/70 px-3 text-sm text-slate-100 outline-none ring-cyan-300/50 placeholder:text-slate-400 focus:ring-2"
           />
           <Button
             type="button"
@@ -64,7 +63,6 @@ export function MultiplierPanel({
             Cash Out
           </Button>
         </div>
-        
       </CardContent>
     </Card>
   );
