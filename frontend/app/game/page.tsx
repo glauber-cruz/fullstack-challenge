@@ -1,4 +1,4 @@
-export default function Home() {
+export default function GamePage() {
   return (
     <div>
       <h1 className="text-2xl font-bold">
