@@ -12,11 +12,12 @@ import { BetsGetMeController } from "./bets/get-me.controller";
 import { RoundsGetCurrentController } from "./rounds/get-current.controller";
 import { RoundsGetVerifyByIdController } from "./rounds/get-verify-by-id.controller";
 
-import { RoundsGetHistoryController } from "./rounds/fetch-history.controller";
+import { RoundsFetchHistoryController } from "./rounds/fetch-history.controller";
 import { CreateBetUseCase } from "@/application/use-cases/bets/create";
 
 import { GetOrCreateUserService } from "@/application/services/get-or-create-user.service";
 import { GetBetsMeQueryHandler } from "@/infrastructure/query-handler/bets/get-me";
+import { FetchRoundsHistoryQueryHandler } from "@/infrastructure/query-handler/rounds/fetch-history";
 
 @Module({
   imports: [RepositoryModule, GuardsModule],
@@ -27,8 +28,13 @@ import { GetBetsMeQueryHandler } from "@/infrastructure/query-handler/bets/get-m
     BetsGetMeController,
     RoundsGetCurrentController,
     RoundsGetVerifyByIdController,
-    RoundsGetHistoryController,
+    RoundsFetchHistoryController,
   ],
-  providers: [GetOrCreateUserService, CreateBetUseCase, GetBetsMeQueryHandler],
+  providers: [
+    GetOrCreateUserService,
+    CreateBetUseCase,
+    GetBetsMeQueryHandler,
+    FetchRoundsHistoryQueryHandler,
+  ],
 })
 export class ControllersModule {}
