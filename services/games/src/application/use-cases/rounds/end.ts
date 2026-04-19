@@ -4,7 +4,7 @@ import { roundsRepositoryToken } from "@/domain/repositories/rounds.repository";
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 
 @Injectable()
-export class RunRoundUseCase {
+export class EndRoundUseCase {
   constructor(
     @Inject(roundsRepositoryToken)
     private readonly roundsRepository: RoundsRepository,
@@ -14,7 +14,7 @@ export class RunRoundUseCase {
     const round = await this.roundsRepository.findById(roundId);
     if (!round) throw new NotFoundException("Round not found");
 
-    round.run();
+    round.end();
     await this.roundsRepository.update(round);
   }
 }

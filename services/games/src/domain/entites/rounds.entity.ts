@@ -69,8 +69,19 @@ export class Round {
   }
 
   run() {
+    if (this.props.status !== RoundStatus.PENDING)
+      throw new Error("Round is not pending to run");
+
     this.props.status = RoundStatus.RUNNING;
     this.props.startAt = new Date();
+  }
+
+  end() {
+    if (this.props.status !== RoundStatus.RUNNING)
+      throw new Error("Round is not running to end");
+
+    this.props.status = RoundStatus.CRASHED;
+    this.props.endedAt = new Date();
   }
 
   static create(

@@ -3,6 +3,7 @@ import { EventBusService } from "../events/event-bus.service";
 
 import { CreateRoundUseCase } from "../use-cases/rounds/create";
 import { RunRoundUseCase } from "../use-cases/rounds/run";
+import { EndRoundUseCase } from "../use-cases/rounds/end";
 
 @Injectable()
 export class GameEngine implements OnModuleInit {
@@ -10,6 +11,7 @@ export class GameEngine implements OnModuleInit {
     private readonly eventBusService: EventBusService,
     private readonly createRoundUseCase: CreateRoundUseCase,
     private readonly runRoundUseCase: RunRoundUseCase,
+    private readonly endRoundUseCase: EndRoundUseCase,
   ) {}
 
   private readonly countdownSeconds = 10;
@@ -42,6 +44,7 @@ export class GameEngine implements OnModuleInit {
       const { roundId, crashMultiplier } = await this.prepareRound();
       await this.countdown(this.countdownSeconds);
       await this.runRound(roundId, crashMultiplier);
+      await this.endRound(roundId);
     }
   }
 
@@ -84,5 +87,9 @@ export class GameEngine implements OnModuleInit {
 
   private formatMultiplier(value: number) {
     return Number(value.toFixed(2));
+  }
+
+  private async endRound(roundId: string) {
+    await this.endRoundUseCase.execute(roundId);
   }
 }
