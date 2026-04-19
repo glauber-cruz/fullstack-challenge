@@ -1,12 +1,8 @@
-import {
-  BetsRepository,
-  betsRepositoryToken,
-} from "@/domain/repositories/bets.repository";
+import type { BetsRepository } from "@/domain/repositories/bets.repository";
+import { betsRepositoryToken } from "@/domain/repositories/bets.repository";
 
-import {
-  RoundsRepository,
-  roundsRepositoryToken,
-} from "@/domain/repositories/rounds.repository";
+import type { RoundsRepository } from "@/domain/repositories/rounds.repository";
+import { roundsRepositoryToken } from "@/domain/repositories/rounds.repository";
 
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { KeycloakUser } from "@/infrastructure/types/keycloack";
@@ -14,7 +10,7 @@ import { KeycloakUser } from "@/infrastructure/types/keycloack";
 import { GetOrCreateUserService } from "../../services/get-or-create-user.service";
 import { Bet } from "@/domain/entites/bets.entity";
 
-import { RoundStatus } from "generated/prisma/client";
+import { RoundStatus } from "@/domain/enums/rounds";
 
 type CreateBetInput = {
   user: KeycloakUser;
