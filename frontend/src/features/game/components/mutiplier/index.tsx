@@ -13,8 +13,8 @@ import { NumericFormat } from "react-number-format";
 
 type MultiplierPanelProps = {
   multiplier: string;
-  betValue: number;
-  setBetValue: Dispatch<SetStateAction<number>>;
+  betValue: number | undefined;
+  setBetValue: Dispatch<SetStateAction<number | undefined>>;
 };
 
 export function MultiplierPanel({
@@ -24,9 +24,6 @@ export function MultiplierPanel({
 }: MultiplierPanelProps) {
   const maxBetValue = 1000;
   const minBetValue = 1;
-
-  const clampBetValue = (value: number) =>
-    Math.min(maxBetValue, Math.max(minBetValue, value));
 
   return (
     <Card className="border-white/10 bg-white/5 py-0 shadow-2xl backdrop-blur">
@@ -46,11 +43,11 @@ export function MultiplierPanel({
             value={betValue}
             onValueChange={({ floatValue }) => {
               if (floatValue === undefined || Number.isNaN(floatValue)) {
+                setBetValue(undefined);
                 return;
               }
               setBetValue(Math.min(maxBetValue, floatValue));
             }}
-            onBlur={() => setBetValue((prev) => clampBetValue(prev))}
             isAllowed={(values) => {
               const { floatValue } = values;
               if (floatValue === undefined) return true;
@@ -67,7 +64,7 @@ export function MultiplierPanel({
             className="h-10 w-full rounded-lg border border-white/15 bg-slate-900/70 px-3 text-sm text-slate-100 outline-none ring-cyan-300/50 placeholder:text-slate-400 focus:ring-2"
           />
           <Button
-            disabled={betValue < minBetValue}
+            disabled={!betValue || betValue < minBetValue}
             type="button"
             size="lg"
             className="bg-linear-to-r cursor-pointer from-blue-500 to-cyan-400 text-white shadow-[0_0_16px_rgba(59,130,246,0.45)] hover:brightness-110"

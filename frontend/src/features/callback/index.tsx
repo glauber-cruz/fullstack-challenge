@@ -15,14 +15,14 @@ export default function Callback() {
         const code = params.get("code");
 
         const error = params.get("error");
-        if (error || !code) return router.push("/login");
+        if (error || !code) return router.push("/");
 
         const keycloackService = new KeycloakService();
         await keycloackService.getTokens(code);
 
         router.push("/game");
       } catch {
-        return router.push("/login");
+        return router.push("/");
       }
     }
 

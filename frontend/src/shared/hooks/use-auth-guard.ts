@@ -26,7 +26,7 @@ export function useAuthGuard() {
       if (!active) return;
 
       if (!valid) {
-        router.push("/login");
+        router.push("/");
         return;
       }
 
