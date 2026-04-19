@@ -127,6 +127,7 @@ export class KeycloakService {
   }
 
   getUser() {
+    if (typeof window === "undefined") return null;
     const accessToken = localStorage.getItem("access_token");
     if (!accessToken || this.isTokenExpired(accessToken)) return null;
 
