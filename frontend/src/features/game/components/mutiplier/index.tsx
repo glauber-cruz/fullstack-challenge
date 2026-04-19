@@ -27,7 +27,7 @@ export function MultiplierPanel({
       <CardContent className="p-6 pt-2">
 
         <div className="flex min-h-64 items-center justify-center rounded-2xl border border-cyan-300/20 bg-slate-900/70">
-          <p className="text-6xl font-extrabold tracking-tight text-cyan-300 drop-shadow-[0_0_18px_rgba(34,211,238,0.8)] md:text-7xl">
+          <p className="text-7xl font-extrabold tracking-tight text-cyan-300 drop-shadow-[0_0_24px_rgba(34,211,238,0.9)] md:text-8xl">
             {multiplier}
           </p>
         </div>
@@ -51,7 +51,7 @@ export function MultiplierPanel({
           <Button
             type="button"
             size="lg"
-            className="bg-linear-to-r from-cyan-500 to-indigo-500 text-white hover:brightness-110"
+            className="bg-linear-to-r from-blue-500 to-cyan-400 text-white shadow-[0_0_16px_rgba(59,130,246,0.45)] hover:brightness-110"
           >
             Apostar
           </Button>
@@ -59,7 +59,7 @@ export function MultiplierPanel({
             type="button"
             size="lg"
             variant="secondary"
-            className="bg-emerald-500/20 text-emerald-200 hover:bg-emerald-500/30"
+            className="bg-emerald-500 text-emerald-950 shadow-[0_0_16px_rgba(34,197,94,0.45)] hover:bg-emerald-400"
           >
             Cash Out
           </Button>
