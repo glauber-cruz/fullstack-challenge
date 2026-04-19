@@ -1,9 +1,5 @@
-export default function Home() {
-  return (
-    <div>
-      <h1 className="text-2xl font-bold">
-        Hello World
-      </h1>
-    </div>
-  );
+import Login from "@/src/features/login";
+
+export default function HomePage() {
+  return <Login />;
 }
