@@ -1,4 +1,11 @@
-import { Body, Controller, Post, Req, UseGuards } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Post,
+  Req,
+  UseGuards,
+  UsePipes,
+} from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 import { AuthGuard } from "@/presentation/guards/auth.guard";
@@ -7,16 +14,14 @@ import type { AuthenticatedRequest } from "@/presentation/guards/auth.guard";
 import { z } from "zod";
 import { CreateBetUseCase } from "@/application/use-cases/bets/create";
 
-import { createZodDto } from "nestjs-zod";
+import { createZodDto, ZodValidationPipe } from "nestjs-zod";
 
 export const createBetSchema = z.object({
-  roundId: z.string(),
-  amount: z.number(),
+  roundId: z.uuid(),
+  amountInCents: z.int().min(100).max(100_000),
 });
 
-class CreateBetBody extends createZodDto(
-  createBetSchema,
-) {}
+class CreateBetBody extends createZodDto(createBetSchema) {}
 
 @Controller("bets")
 @ApiTags("Bets")
@@ -26,14 +31,12 @@ export class BetsCreateController {
   constructor(private readonly createBetUseCase: CreateBetUseCase) {}
 
   @Post()
-  async handle(
-    @Req() req: AuthenticatedRequest,
-    @Body() body: CreateBetBody,
-  ) {
+  @UsePipes(new ZodValidationPipe(createBetSchema))
+  async handle(@Req() req: AuthenticatedRequest, @Body() body: CreateBetBody) {
     await this.createBetUseCase.execute({
       user: req.user,
       roundId: body.roundId,
-      amount: body.amount,
+      amountInCents: body.amountInCents,
     });
   }
 }

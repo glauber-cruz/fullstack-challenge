@@ -4,18 +4,24 @@ import { betsRepositoryToken } from "@/domain/repositories/bets.repository";
 import type { RoundsRepository } from "@/domain/repositories/rounds.repository";
 import { roundsRepositoryToken } from "@/domain/repositories/rounds.repository";
 
-import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { KeycloakUser } from "@/infrastructure/types/keycloack";
 
 import { GetOrCreateUserService } from "../../services/get-or-create-user.service";
 import { Bet } from "@/domain/entites/bets.entity";
 
 import { RoundStatus } from "@/domain/enums/rounds";
+import { Amount } from "@/domain/value-object/amount";
 
 type CreateBetInput = {
   user: KeycloakUser;
   roundId: string;
-  amount: number;
+  amountInCents: number;
 };
 
 @Injectable()
@@ -36,12 +42,15 @@ export class CreateBetUseCase {
     if (round.status === RoundStatus.RUNNING)
       throw new BadRequestException("Round is already running");
 
-    const bet = Bet.create({
-      userId: user.id,
-      roundId: round.id,
-      amount: input.amount,
-    });
+    let amount: Amount;
 
+    try {
+      amount = Amount.create(input.amountInCents);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+
+    const bet = Bet.create({ userId: user.id, roundId: round.id, amount });
     await this.betsRepository.create(bet);
   }
 }

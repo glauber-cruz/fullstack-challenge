@@ -1,11 +1,13 @@
 import { v4 as uuidv4 } from "uuid";
 import { Optional } from "../core/optional";
 
+import { Amount } from "../value-object/amount";
+
 export type BetProps = {
   id: string;
   userId: string;
   roundId: string;
-  amount: number;
+  amount: Amount;
   cashoutMultiplier?: number;
   cashedOutAt?: Date;
   createdAt?: Date;

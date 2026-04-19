@@ -1,6 +1,7 @@
 import { Bet } from "@/domain/entites/bets.entity";
 
 import type { Bets } from "../../../generated/prisma/client";
+import { Amount } from "@/domain/value-object/amount";
 
 export class BetsMapper {
   static toEntity(data: Bets): Bet {
@@ -8,7 +9,7 @@ export class BetsMapper {
       id: data.id,
       userId: data.userId,
       roundId: data.roundId,
-      amount: Number(data.amount),
+      amount: Amount.create(Number(data.amount)),
       cashoutMultiplier: data.cashoutMultiplier ?? undefined,
       cashedOutAt: data.cashedOutAt ?? undefined,
       createdAt: data.createdAt,
@@ -21,7 +22,7 @@ export class BetsMapper {
       id: data.id,
       userId: data.userId,
       roundId: data.roundId,
-      amount: data.amount,
+      amount: data.amount.cents,
       cashoutMultiplier: data.cashoutMultiplier,
       cashedOutAt: data.cashedOutAt,
     };
@@ -29,7 +30,7 @@ export class BetsMapper {
 
   static toPrismaUpdate(data: Bet) {
     return {
-      amount: data.amount,
+      amount: data.amount.cents,
       cashoutMultiplier: data.cashoutMultiplier,
       cashedOutAt: data.cashedOutAt,
     };
