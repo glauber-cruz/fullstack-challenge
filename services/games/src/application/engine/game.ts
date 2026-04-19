@@ -5,6 +5,9 @@ import { CreateRoundUseCase } from "../use-cases/rounds/create";
 import { RunRoundUseCase } from "../use-cases/rounds/run";
 import { EndRoundUseCase } from "../use-cases/rounds/end";
 
+// Como fiquei sem tempo a engine vai ser um singeliton que roda em memoria, então esse código é
+// resenha em nuvem KKKKKK mas serve como base, uma boa seria integrar ele com redis pra ter 
+// persistencia.
 @Injectable()
 export class GameEngine implements OnModuleInit {
   constructor(

@@ -17,6 +17,7 @@ import { Bet } from "@/domain/entites/bets.entity";
 
 import { RoundStatus } from "@/domain/enums/rounds";
 import { Amount } from "@/domain/value-object/amount";
+import { EventBusService } from "@/application/events/event-bus.service";
 
 type CreateBetInput = {
   user: KeycloakUser;
@@ -32,11 +33,11 @@ export class CreateBetUseCase {
     @Inject(roundsRepositoryToken)
     private readonly roundsRepository: RoundsRepository,
     private readonly getOrCreateUserService: GetOrCreateUserService,
+    private readonly eventBus: EventBusService,
   ) {}
 
   async execute(input: CreateBetInput) {
     const round = await this.roundsRepository.findById(input.roundId);
-
     if (!round) throw new NotFoundException("Round not found");
 
     if (round.status !== RoundStatus.PENDING)
@@ -54,5 +55,12 @@ export class CreateBetUseCase {
     const bet = Bet.create({ userId: user.id, roundId: round.id, amount });
 
     await this.betsRepository.create(bet);
+
+    this.eventBus.emit("bets:created", {
+      id: bet.id,
+      userId: user.id,
+      roundId: round.id,
+      amount: amount.toReais().toString(),
+    });
   }
 }
