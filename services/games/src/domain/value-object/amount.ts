@@ -1,9 +1,3 @@
-import {
-  centavosParaReais,
-  reaisInteirosParaCentavos,
-  type ReaisInteirosParaCentavosOptions,
-} from "../core/cents";
-
 export class Amount {
   private readonly value: number;
 
@@ -14,14 +8,6 @@ export class Amount {
   static create(value: number) {
     Amount.validate(value);
     return new Amount(value);
-  }
-
-  /** Montante a partir de **reais inteiros** (ex.: `Amount.fromReaisInteiros(1000)` → 100_000 centavos). */
-  static fromReaisInteiros(
-    reais: number,
-    options?: ReaisInteirosParaCentavosOptions,
-  ) {
-    return Amount.create(reaisInteirosParaCentavos(reais, options));
   }
 
   private static validate(value: number) {
@@ -39,6 +25,6 @@ export class Amount {
   }
 
   toReais() {
-    return centavosParaReais(this.value);
+    return this.value / 100;
   }
 }
