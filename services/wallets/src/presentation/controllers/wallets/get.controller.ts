@@ -6,7 +6,6 @@ import {
   UseGuards,
 } from "@nestjs/common";
 
-import type { GetWalletMeResponse } from "@/presentation/dtos/wallet/get-me.dto";
 import {
   GetWalletMePresentation,
   GetWalletMeResponseDto,
@@ -29,7 +28,7 @@ export class GetWalletController {
 
   @Get("me")
   @ApiOkResponse({ type: GetWalletMeResponseDto })
-  async handle(@Req() req: AuthenticatedRequest): Promise<GetWalletMeResponse> {
+  async handle(@Req() req: AuthenticatedRequest) {
     const wallet = await this.getWalletMeQueryBuilder.execute(req.user.sub);
     if (!wallet) throw new NotFoundException("Wallet not found");
     return GetWalletMePresentation.toHTTP(wallet);
