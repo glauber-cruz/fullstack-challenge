@@ -12,7 +12,7 @@ import { useState } from "react";
 
 export default function Game() {
   const { loading } = useAuthGuard();
-  const [betValue, setBetValue] = useState<number>(1);
+  const [betValue, setBetValue] = useState<number>();
 
   if (loading) return <div>Loading...</div>;
 

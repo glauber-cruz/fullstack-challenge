@@ -1,5 +1,7 @@
 "use client";
 
+import type { Dispatch, SetStateAction } from "react";
+
 import { Button } from "@/src/shared/components/ui/button";
 import {
   Card,
@@ -12,7 +14,7 @@ import { NumericFormat } from "react-number-format";
 type MultiplierPanelProps = {
   multiplier: string;
   betValue: number;
-  setBetValue: (value: number) => void;
+  setBetValue: Dispatch<SetStateAction<number>>;
 };
 
 export function MultiplierPanel({
@@ -20,9 +22,11 @@ export function MultiplierPanel({
   betValue,
   setBetValue,
 }: MultiplierPanelProps) {
-
   const maxBetValue = 1000;
   const minBetValue = 1;
+
+  const clampBetValue = (value: number) =>
+    Math.min(maxBetValue, Math.max(minBetValue, value));
 
   return (
     <Card className="border-white/10 bg-white/5 py-0 shadow-2xl backdrop-blur">
@@ -41,17 +45,18 @@ export function MultiplierPanel({
           <NumericFormat
             value={betValue}
             onValueChange={({ floatValue }) => {
-              const next =
-                floatValue === undefined || Number.isNaN(floatValue)
-                  ? minBetValue
-                  : Math.min(maxBetValue, Math.max(minBetValue, floatValue));
-              setBetValue(next);
+              if (floatValue === undefined || Number.isNaN(floatValue)) {
+                return;
+              }
+              setBetValue(Math.min(maxBetValue, floatValue));
             }}
+            onBlur={() => setBetValue((prev) => clampBetValue(prev))}
             isAllowed={(values) => {
               const { floatValue } = values;
               if (floatValue === undefined) return true;
               return floatValue <= maxBetValue;
             }}
+            placeholder="Digite o valor da aposta"
             thousandSeparator="."
             decimalSeparator=","
             prefix="R$ "
@@ -62,6 +67,7 @@ export function MultiplierPanel({
             className="h-10 w-full rounded-lg border border-white/15 bg-slate-900/70 px-3 text-sm text-slate-100 outline-none ring-cyan-300/50 placeholder:text-slate-400 focus:ring-2"
           />
           <Button
+            disabled={betValue < minBetValue}
             type="button"
             size="lg"
             className="bg-linear-to-r cursor-pointer from-blue-500 to-cyan-400 text-white shadow-[0_0_16px_rgba(59,130,246,0.45)] hover:brightness-110"
