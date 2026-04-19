@@ -7,7 +7,7 @@ import { HistoryPanel } from "@/src/features/game/components/history";
 import { MultiplierPanel } from "@/src/features/game/components/mutiplier";
 
 import { mockBets, mockHistory } from "@/src/features/game/mocks/game-data";
-import { useRoundsCountdown } from "@/src/features/game/hooks/use-rounds-countdown";
+import { useGameEvents } from "@/src/features/game/hooks/use-game-events";
 import { useAuthGuard } from "@/src/shared/hooks/use-auth-guard";
 
 import { useState } from "react";
@@ -15,7 +15,8 @@ import { useState } from "react";
 export default function Game() {
   const { loading } = useAuthGuard();
   const [betValue, setBetValue] = useState<number>();
-  const { seconds: countdownSeconds } = useRoundsCountdown();
+  const { seconds: countdownSeconds, multiplier: currentMultiplier } =
+    useGameEvents();
 
   if (loading) return <div>Loading...</div>;
 
@@ -25,14 +26,11 @@ export default function Game() {
       <div className="absolute -bottom-24 right-1/3 h-80 w-80 rounded-full bg-indigo-500/20 blur-3xl" />
 
       <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col gap-6">
-        <GameHeader
-          balance="R$ 2.450,00"
-          countdownSeconds={countdownSeconds}
-        />
+        <GameHeader balance="R$ 2.450,00" countdownSeconds={countdownSeconds} />
 
         <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
           <MultiplierPanel
-            multiplier="2.35x"
+            multiplier={`${currentMultiplier?.toString()}x`}
             betValue={betValue}
             setBetValue={setBetValue}
           />

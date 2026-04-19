@@ -12,7 +12,7 @@ export class GameEngine implements OnModuleInit {
     private readonly runRoundUseCase: RunRoundUseCase,
   ) {}
 
-  private readonly countdownSeconds = 60;
+  private readonly countdownSeconds = 5;
 
   onModuleInit() {
     this.start();
@@ -39,16 +39,16 @@ export class GameEngine implements OnModuleInit {
 
   private async loop() {
     while (true) {
-      const roundId = await this.prepareRound();
+      const { roundId, crashMultiplier } = await this.prepareRound();
       await this.countdown(this.countdownSeconds);
-      await this.startRound(roundId);
+      await this.runRound(roundId, crashMultiplier);
     }
   }
 
   private async prepareRound() {
     const crashMultiplier = this.calculateCrashMultiplier();
     const roundId = await this.createRoundUseCase.execute({ crashMultiplier });
-    return roundId;
+    return { roundId, crashMultiplier };
   }
 
   private calculateCrashMultiplier() {
@@ -59,7 +59,29 @@ export class GameEngine implements OnModuleInit {
     return Math.min(100, Math.max(1, Number(crash.toFixed(2))));
   }
 
-  private async startRound(roundId: string) {
+  private async runRound(roundId: string, crashMultiplier: number) {
     await this.runRoundUseCase.execute(roundId);
+    await this.runRunning(roundId, crashMultiplier);
+  }
+
+  private async runRunning(roundId: string, crashMultiplier: number) {
+    let multiplier = 1;
+    const step = 0.01;
+    const interval = 100;
+
+    while (multiplier < crashMultiplier) {
+      await this.wait(interval);
+
+      multiplier += step;
+
+      this.emit("rounds:running", {
+        roundId,
+        multiplier: this.formatMultiplier(multiplier),
+      });
+    }
+  }
+
+  private formatMultiplier(value: number) {
+    return Number(value.toFixed(2));
   }
 }
