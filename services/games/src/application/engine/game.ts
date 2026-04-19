@@ -66,14 +66,15 @@ export class GameEngine implements OnModuleInit {
 
   private async runRunning(roundId: string, crashMultiplier: number) {
     let multiplier = 1;
-    const step = 0.01;
+  
     const interval = 100;
-
+    const growthRate = 0.015;
+  
     while (multiplier < crashMultiplier) {
       await this.wait(interval);
-
-      multiplier += step;
-
+  
+      multiplier *= (1 + growthRate);
+  
       this.emit("rounds:running", {
         roundId,
         multiplier: this.formatMultiplier(multiplier),
