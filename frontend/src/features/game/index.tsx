@@ -33,6 +33,7 @@ export default function Game() {
             multiplier={`${currentMultiplier?.toString()}x`}
             betValue={betValue}
             setBetValue={setBetValue}
+            bettingLocked={countdownSeconds === 0}
           />
           <HistoryPanel history={mockHistory} />
         </div>

@@ -15,12 +15,15 @@ type MultiplierPanelProps = {
   multiplier: string;
   betValue: number | undefined;
   setBetValue: Dispatch<SetStateAction<number | undefined>>;
+  /** When true, bet amount cannot be changed and placing a bet is blocked. */
+  bettingLocked?: boolean;
 };
 
 export function MultiplierPanel({
   multiplier,
   betValue,
   setBetValue,
+  bettingLocked = false,
 }: MultiplierPanelProps) {
   const maxBetValue = 1000;
   const minBetValue = 1;
@@ -42,6 +45,7 @@ export function MultiplierPanel({
           <NumericFormat
             value={betValue}
             onValueChange={({ floatValue }) => {
+              if (bettingLocked) return;
               if (floatValue === undefined || Number.isNaN(floatValue)) {
                 setBetValue(undefined);
                 return;
@@ -60,11 +64,14 @@ export function MultiplierPanel({
             decimalScale={2}
             fixedDecimalScale
             allowNegative={false}
+            disabled={bettingLocked}
             aria-label="Valor da aposta"
-            className="h-10 w-full rounded-lg border border-white/15 bg-slate-900/70 px-3 text-sm text-slate-100 outline-none ring-cyan-300/50 placeholder:text-slate-400 focus:ring-2"
+            className="h-10 w-full rounded-lg border border-white/15 bg-slate-900/70 px-3 text-sm text-slate-100 outline-none ring-cyan-300/50 placeholder:text-slate-400 focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
           />
           <Button
-            disabled={!betValue || betValue < minBetValue}
+            disabled={
+              bettingLocked || !betValue || betValue < minBetValue
+            }
             type="button"
             size="lg"
             className="bg-linear-to-r cursor-pointer from-blue-500 to-cyan-400 text-white shadow-[0_0_16px_rgba(59,130,246,0.45)] hover:brightness-110"

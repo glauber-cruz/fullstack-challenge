@@ -24,6 +24,15 @@ export class GameEngine implements OnModuleInit {
     this.loop();
   }
 
+  private async loop() {
+    while (true) {
+      const { roundId, crashMultiplier } = await this.prepareRound();
+      await this.countdown(this.countdownSeconds);
+      await this.runRound(roundId, crashMultiplier);
+      await this.endRound(roundId);
+    }
+  }
+
   private emit(event: string, data?: any) {
     this.eventBusService.emit(event, data);
   }
@@ -37,15 +46,6 @@ export class GameEngine implements OnModuleInit {
 
   private async wait(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
-  }
-
-  private async loop() {
-    while (true) {
-      const { roundId, crashMultiplier } = await this.prepareRound();
-      await this.countdown(this.countdownSeconds);
-      await this.runRound(roundId, crashMultiplier);
-      await this.endRound(roundId);
-    }
   }
 
   private async prepareRound() {
