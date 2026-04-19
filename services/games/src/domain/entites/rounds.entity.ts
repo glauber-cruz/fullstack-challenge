@@ -36,6 +36,22 @@ export class Round {
     return this.props.crashMultiplier;
   }
 
+  currentCrashMultiplier() {
+    if (!this.props.startAt || !this.props.crashMultiplier) 
+      throw new Error("Round is not started or crash multiplier is not set");
+    
+    const now = Date.now();
+
+    const start = this.props.startAt.getTime();
+    const elapsed = now - start;
+
+    const speed = 1.00007;
+    const multiplier = Math.pow(speed, elapsed);
+
+    const max = this.props.crashMultiplier ;
+    return Math.min(multiplier, max);
+  }
+
   get startAt() {
     return this.props.startAt;
   }

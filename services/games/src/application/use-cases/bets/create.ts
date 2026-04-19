@@ -35,12 +35,12 @@ export class CreateBetUseCase {
   ) {}
 
   async execute(input: CreateBetInput) {
-    const user = await this.getOrCreateUserService.execute(input.user);
     const round = await this.roundsRepository.findById(input.roundId);
 
     if (!round) throw new NotFoundException("Round not found");
-    if (round.status === RoundStatus.RUNNING)
-      throw new BadRequestException("Round is already running");
+
+    if (round.status !== RoundStatus.PENDING)
+      throw new BadRequestException("Round is not pending to accept bets");
 
     let amount: Amount;
 
@@ -50,7 +50,9 @@ export class CreateBetUseCase {
       throw new BadRequestException(error.message);
     }
 
+    const user = await this.getOrCreateUserService.execute(input.user);
     const bet = Bet.create({ userId: user.id, roundId: round.id, amount });
+
     await this.betsRepository.create(bet);
   }
 }
