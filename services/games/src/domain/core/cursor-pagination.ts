@@ -6,7 +6,7 @@ export class CursorPagination {
     return {
       nextCursor,
       limit,
-      results: hasMore ? results.slice(0, limit) : results,
+      items: hasMore ? results.slice(0, limit) : results,
     };
   }
 }
