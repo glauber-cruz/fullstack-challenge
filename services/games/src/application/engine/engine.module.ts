@@ -1,8 +1,12 @@
 import { Module } from "@nestjs/common";
 import { GameEngine } from "./game";
+import { RepositoryModule } from "@/infrastructure/repositories/repository.module";
+import { CreateRoundUseCase } from "../use-cases/rounds/create";
+import { RunRoundUseCase } from "../use-cases/rounds/run";
 
 @Module({
-  providers: [GameEngine],
+  imports: [RepositoryModule],
+  providers: [GameEngine, CreateRoundUseCase, RunRoundUseCase],
   exports: [GameEngine],
 })
 export class EngineModule {}

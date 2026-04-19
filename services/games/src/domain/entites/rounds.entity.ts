@@ -68,6 +68,11 @@ export class Round {
     return this.props.updatedAt;
   }
 
+  run() {
+    this.props.status = RoundStatus.RUNNING;
+    this.props.startAt = new Date();
+  }
+
   static create(
     props: Optional<
       RoundProps,

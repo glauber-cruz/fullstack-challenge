@@ -1,12 +1,8 @@
-import {
-  BetsRepository,
-  betsRepositoryToken,
-} from "@/domain/repositories/bets.repository";
+import type { BetsRepository } from "@/domain/repositories/bets.repository";
+import { betsRepositoryToken } from "@/domain/repositories/bets.repository";
 
-import {
-  RoundsRepository,
-  roundsRepositoryToken,
-} from "@/domain/repositories/rounds.repository";
+import type { RoundsRepository } from "@/domain/repositories/rounds.repository";
+import { roundsRepositoryToken } from "@/domain/repositories/rounds.repository";
 
 import { BadRequestException, Inject, NotFoundException } from "@nestjs/common";
 import { RoundStatus } from "@/domain/enums/rounds";
