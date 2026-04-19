@@ -4,6 +4,7 @@ import { PrismaService } from "../databases/prisma.service";
 import type { RoundsRepository } from "../../domain/repositories/rounds.repository";
 import { Round } from "@/domain/entites/rounds.entity";
 import { RoundsMapper } from "../mappers/rounds.mapper";
+import { RoundStatus } from "@/domain/enums/rounds";
 
 @Injectable()
 export class RoundsRepositoryImpl implements RoundsRepository {
