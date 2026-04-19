@@ -12,7 +12,7 @@ export class GameEngine implements OnModuleInit {
     private readonly runRoundUseCase: RunRoundUseCase,
   ) {}
 
-  private readonly countdownSeconds = 5;
+  private readonly countdownSeconds = 10;
 
   onModuleInit() {
     this.start();
@@ -27,7 +27,7 @@ export class GameEngine implements OnModuleInit {
   }
 
   private async countdown(seconds: number) {
-    for (let i = seconds; i > 0; i--) {
+    for (let i = seconds; i >= 0; i--) {
       this.emit("rounds:countdown", { seconds: i });
       await this.wait(1000);
     }
@@ -66,15 +66,15 @@ export class GameEngine implements OnModuleInit {
 
   private async runRunning(roundId: string, crashMultiplier: number) {
     let multiplier = 1;
-  
+
     const interval = 100;
     const growthRate = 0.015;
-  
+
     while (multiplier < crashMultiplier) {
       await this.wait(interval);
-  
-      multiplier *= (1 + growthRate);
-  
+
+      multiplier *= 1 + growthRate;
+
       this.emit("rounds:running", {
         roundId,
         multiplier: this.formatMultiplier(multiplier),
