@@ -3,7 +3,7 @@
 import { KeycloakService } from "@/src/services/keycloack";
 import { useRouter } from "next/navigation";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAuth } from "@/src/shared/contexts/auth";
 
 export function useAuthGuard() {
@@ -11,23 +11,35 @@ export function useAuthGuard() {
   const { refreshUser } = useAuth();
   const [loading, setLoading] = useState(true);
 
-  const keycloak = useMemo(() => new KeycloakService(), []);
+  const keycloakRef = useRef<KeycloakService | null>(null);
+
+  if (keycloakRef.current === null) {
+    keycloakRef.current = new KeycloakService();
+  }
 
   useEffect(() => {
+    let active = true;
+
     async function check() {
-      const valid = await keycloak.ensureValidToken();
+      const valid = await keycloakRef.current!.ensureValidToken();
+
+      if (!active) return;
 
       if (!valid) {
         router.push("/login");
         return;
       }
 
-      refreshUser();
+      await refreshUser?.();
       setLoading(false);
     }
 
     check();
-  }, [router, keycloak, refreshUser]);
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   return { loading };
 }

@@ -8,9 +8,12 @@ import { MultiplierPanel } from "@/src/features/game/components/mutiplier";
 
 import { mockBets, mockHistory } from "@/src/features/game/mocks/game-data";
 import { useAuthGuard } from "@/src/shared/hooks/use-auth-guard";
+import { useState } from "react";
 
 export default function Game() {
   const { loading } = useAuthGuard();
+  const [betValue, setBetValue] = useState<number>(1);
+
   if (loading) return <div>Loading...</div>;
 
   return (
@@ -22,7 +25,11 @@ export default function Game() {
         <GameHeader balance="R$ 2.450,00" />
 
         <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-          <MultiplierPanel multiplier="2.35x" defaultBetValue={1} />
+          <MultiplierPanel
+            multiplier="2.35x"
+            betValue={betValue}
+            setBetValue={setBetValue}
+          />
           <HistoryPanel history={mockHistory} />
         </div>
 
