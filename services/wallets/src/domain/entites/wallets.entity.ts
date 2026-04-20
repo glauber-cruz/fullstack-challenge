@@ -1,10 +1,12 @@
 import { v4 as uuidv4 } from "uuid";
 import { Optional } from "../core/optional";
 
+import { Amount } from "../value-object/amount";
+
 export type WalletProps = {
   id: string;
   userId: string;
-  balance: number;
+  balance: Amount;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -18,6 +20,7 @@ export class Wallet {
     this.props = {
       ...props,
       id: this._id,
+      balance: props.balance ?? Amount.create(0),
     };
   }
 
@@ -46,7 +49,6 @@ export class Wallet {
   ) {
     return new Wallet({
       ...props,
-      balance: props.balance ?? 0,
     } as WalletProps);
   }
 }

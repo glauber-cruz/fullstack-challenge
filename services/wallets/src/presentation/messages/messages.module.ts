@@ -2,9 +2,6 @@ import { Module } from "@nestjs/common";
 import { ClientsModule, Transport } from "@nestjs/microservices";
 
 import { RepositoryModule } from "@/infrastructure/repositories/repository.module";
-import { ProcessBetConsumerService } from "./bets/process";
-
-import { ProcessBetUseCase } from "@/application/use-cases/bets/process";
 
 @Module({
   imports: [

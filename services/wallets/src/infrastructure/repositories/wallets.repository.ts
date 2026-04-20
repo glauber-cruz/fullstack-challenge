@@ -12,9 +12,16 @@ export class WalletsRepositoryImpl implements WalletsRepository {
   async userHasWallet(userId: string): Promise<boolean> {
     const wallet = await this.prisma.wallets.findFirst({
       where: { userId },
-      select: {id: true, },
+      select: { id: true },
     });
     return wallet !== null;
+  }
+
+  async findByUserId(userId: string): Promise<Wallet | null> {
+    const wallet = await this.prisma.wallets.findFirst({
+      where: { userId },
+    });
+    return wallet ? WalletsMapper.toEntity(wallet) : null;
   }
 
   async create(wallet: Wallet): Promise<void> {
