@@ -1,4 +1,5 @@
 import { Module } from "@nestjs/common";
+import { ClientsModule, Transport } from "@nestjs/microservices";
 
 import { GuardsModule } from "../guards/guards.module";
 import { RepositoryModule } from "@/infrastructure/repositories/repository.module";
@@ -20,7 +21,23 @@ import { GetBetsMeQueryHandler } from "@/infrastructure/query-handler/bets/get-m
 import { FetchRoundsHistoryQueryHandler } from "@/infrastructure/query-handler/rounds/fetch-history";
 
 @Module({
-  imports: [RepositoryModule, GuardsModule],
+  imports: [
+    RepositoryModule,
+    GuardsModule,
+    ClientsModule.register([
+      {
+        name: "WALLETS_RMQ_CLIENT",
+        transport: Transport.RMQ,
+        options: {
+          urls: [process.env.RABBITMQ_URL ?? ""],
+          queue: "wallets_queue",
+          queueOptions: {
+            durable: false,
+          },
+        },
+      },
+    ]),
+  ],
   controllers: [
     GamesController,
     BetsCreateController,
