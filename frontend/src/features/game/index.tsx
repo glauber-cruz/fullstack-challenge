@@ -6,17 +6,32 @@ import { GameHeader } from "@/src/features/game/components/header";
 import { HistoryPanel } from "@/src/features/game/components/history";
 import { MultiplierPanel } from "@/src/features/game/components/mutiplier";
 
-import { mockBets, mockHistory } from "@/src/features/game/mocks/game-data";
-import { useGameEvents } from "@/src/features/game/hooks/use-game-events";
-import { useAuthGuard } from "@/src/shared/hooks/use-auth-guard";
+import {
+  betsCreatedPayload,
+  useGameEvents,
+} from "@/src/features/game/hooks/use-game-events";
 
-import { useState } from "react";
+import { useAuthGuard } from "@/src/shared/hooks/use-auth-guard";
+import { useEffect, useState } from "react";
 
 export default function Game() {
   const { loading } = useAuthGuard();
   const [betValue, setBetValue] = useState<number>();
-  const { seconds: countdownSeconds, multiplier: currentMultiplier } =
-    useGameEvents();
+  const [bets, setBets] = useState<betsCreatedPayload[]>([]);
+  const {
+    seconds: countdownSeconds,
+    multiplier: currentMultiplier,
+    roundId,
+    createdBet,
+  } = useGameEvents();
+
+  useEffect(() => {
+    function handleCreatedBet() {
+      if (!createdBet) return;
+      setBets((prev) => [createdBet, ...prev]);
+    }
+    handleCreatedBet();
+  }, [createdBet]);
 
   if (loading) return <div>Loading...</div>;
 
@@ -30,15 +45,16 @@ export default function Game() {
 
         <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
           <MultiplierPanel
+            roundId={roundId}
             multiplier={`${currentMultiplier?.toString()}x`}
             betValue={betValue}
             setBetValue={setBetValue}
             bettingLocked={countdownSeconds === 0}
           />
-          <HistoryPanel history={mockHistory} />
+          <HistoryPanel history={[]} />
         </div>
 
-        <BetsTable bets={mockBets} />
+        <BetsTable bets={bets} />
       </div>
     </main>
   );

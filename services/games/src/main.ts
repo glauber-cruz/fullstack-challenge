@@ -10,6 +10,10 @@ async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
   const port = Number(process.env.PORT) || 4001;
 
+  app.enableCors({
+    origin: "*",
+  });
+
   const config = new DocumentBuilder()
     .setTitle("Games API")
     .setDescription("API documentation")

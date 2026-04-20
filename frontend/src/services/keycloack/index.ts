@@ -85,6 +85,10 @@ export class KeycloakService {
     return await this.refreshTokens();
   }
 
+  getAccessToken() {
+    return localStorage.getItem("access_token");
+  }
+
   private async refreshTokens() {
     const refreshToken = localStorage.getItem("refresh_token");
     if (!refreshToken) return false;

@@ -59,6 +59,8 @@ export class CreateBetUseCase {
     this.eventBus.emit("bets:created", {
       id: bet.id,
       userId: user.id,
+      username: user.name,
+      status: RoundStatus.PENDING,
       roundId: round.id,
       amount: amount.toReais().toString(),
     });

@@ -1,4 +1,3 @@
-import type { Bet } from "@/src/features/game/mocks/game-data";
 import {
   Card,
   CardContent,
@@ -8,9 +7,10 @@ import {
 import { Table } from "@/src/shared/components/ui/table";
 import { RoundsTableHeader } from "@/src/features/game/components/round-bets/rounds-table-header";
 import { RoundsTableBody } from "@/src/features/game/components/round-bets/rounds-table-body";
+import { betsCreatedPayload } from "../../hooks/use-game-events";
 
 type BetsTableProps = {
-  bets: Bet[];
+  bets: betsCreatedPayload[];
 };
 
 export function BetsTable({ bets }: BetsTableProps) {

@@ -6,7 +6,7 @@ import { RunRoundUseCase } from "../use-cases/rounds/run";
 import { EndRoundUseCase } from "../use-cases/rounds/end";
 
 // Como fiquei sem tempo a engine vai ser um singeliton que roda em memoria, então esse código é
-// resenha em nuvem KKKKKK mas serve como base, uma boa seria integrar ele com redis pra ter 
+// resenha em nuvem KKKKKK mas serve como base, uma boa seria integrar ele com redis pra ter
 // persistencia.
 @Injectable()
 export class GameEngine implements OnModuleInit {
@@ -30,7 +30,7 @@ export class GameEngine implements OnModuleInit {
   private async loop() {
     while (true) {
       const { roundId, crashMultiplier } = await this.prepareRound();
-      await this.countdown(this.countdownSeconds);
+      await this.countdown(this.countdownSeconds, roundId);
       await this.runRound(roundId, crashMultiplier);
       await this.endRound(roundId);
     }
@@ -40,9 +40,9 @@ export class GameEngine implements OnModuleInit {
     this.eventBusService.emit(event, data);
   }
 
-  private async countdown(seconds: number) {
+  private async countdown(seconds: number, roundId: string) {
     for (let i = seconds; i >= 0; i--) {
-      this.emit("rounds:countdown", { seconds: i });
+      this.emit("rounds:countdown", { seconds: i, roundId });
       await this.wait(1000);
     }
   }
@@ -67,10 +67,10 @@ export class GameEngine implements OnModuleInit {
 
   private async runRound(roundId: string, crashMultiplier: number) {
     await this.runRoundUseCase.execute(roundId);
-    await this.runRunning(roundId, crashMultiplier);
+    await this.runRunning(crashMultiplier);
   }
 
-  private async runRunning(roundId: string, crashMultiplier: number) {
+  private async runRunning(crashMultiplier: number) {
     let multiplier = 1;
 
     const interval = 100;
@@ -82,7 +82,6 @@ export class GameEngine implements OnModuleInit {
       multiplier *= 1 + growthRate;
 
       this.emit("rounds:running", {
-        roundId,
         multiplier: this.formatMultiplier(multiplier),
       });
     }

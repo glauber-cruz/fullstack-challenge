@@ -5,11 +5,11 @@ import { useEffect, useState } from "react";
 import { socket } from "@/src/shared/lib/socket-io";
 
 export type countdownPayload = {
+  roundId: string;
   seconds: number;
 };
 
 export type runningPayload = {
-  roundId: string;
   multiplier: number;
 };
 
@@ -18,19 +18,24 @@ export type betsCreatedPayload = {
   userId: string;
   roundId: string;
   amount: string;
+  status: string;
+  username: string;
 };
 
 export function useGameEvents() {
   const [seconds, setSeconds] = useState<number | null>(null);
   const [multiplier, setMultiplier] = useState<number | null>(1.0);
+  const [roundId, setRoundId] = useState<string | null>(null);
+  const [createdBet, setCreatedBet] = useState<betsCreatedPayload | null>(null);
 
   useEffect(() => {
     const onBetsCreated = (data: betsCreatedPayload) => {
-      console.log("bets:created", data);
+      setCreatedBet(data);
     };
 
     const onCountdown = (data: countdownPayload) => {
       setSeconds(data.seconds);
+      setRoundId(data.roundId);
     };
 
     const onRunning = (data: runningPayload) => {
@@ -46,5 +51,5 @@ export function useGameEvents() {
     };
   }, []);
 
-  return { seconds, multiplier };
+  return { seconds, multiplier, roundId, createdBet };
 }

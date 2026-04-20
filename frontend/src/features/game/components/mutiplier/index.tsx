@@ -1,6 +1,6 @@
 "use client";
 
-import type { Dispatch, SetStateAction } from "react";
+import { useState, type Dispatch, type SetStateAction } from "react";
 
 import { Button } from "@/src/shared/components/ui/button";
 import {
@@ -10,13 +10,15 @@ import {
   CardTitle,
 } from "@/src/shared/components/ui/card";
 import { NumericFormat } from "react-number-format";
+import { GameService } from "@/src/services/game";
+import { KeycloakService } from "@/src/services/keycloack";
 
 type MultiplierPanelProps = {
   multiplier: string;
   betValue: number | undefined;
   setBetValue: Dispatch<SetStateAction<number | undefined>>;
-  /** When true, bet amount cannot be changed and placing a bet is blocked. */
   bettingLocked?: boolean;
+  roundId: string | null;
 };
 
 export function MultiplierPanel({
@@ -24,9 +26,25 @@ export function MultiplierPanel({
   betValue,
   setBetValue,
   bettingLocked = false,
+  roundId,
 }: MultiplierPanelProps) {
   const maxBetValue = 1000;
   const minBetValue = 1;
+  const [isBetting, setIsBetting] = useState(false);
+
+  const handleBet = async () => {
+    const gameService = new GameService(new KeycloakService());
+    if (!betValue || !roundId) return;
+
+    const amountInCents = Math.round(Number(betValue) * 100);
+
+    setIsBetting(true);
+    try {
+      const response = await gameService.createBet({ amountInCents, roundId });
+    } finally {
+      setIsBetting(false);
+    }
+  };
 
   return (
     <Card className="border-white/10 bg-white/5 py-0 shadow-2xl backdrop-blur">
@@ -45,7 +63,7 @@ export function MultiplierPanel({
           <NumericFormat
             value={betValue}
             onValueChange={({ floatValue }) => {
-              if (bettingLocked) return;
+              if (bettingLocked || isBetting) return;
               if (floatValue === undefined || Number.isNaN(floatValue)) {
                 setBetValue(undefined);
                 return;
@@ -64,19 +82,51 @@ export function MultiplierPanel({
             decimalScale={2}
             fixedDecimalScale
             allowNegative={false}
-            disabled={bettingLocked}
+            disabled={bettingLocked || isBetting}
             aria-label="Valor da aposta"
             className="h-10 w-full rounded-lg border border-white/15 bg-slate-900/70 px-3 text-sm text-slate-100 outline-none ring-cyan-300/50 placeholder:text-slate-400 focus:ring-2 disabled:cursor-not-allowed disabled:opacity-50"
           />
           <Button
             disabled={
-              bettingLocked || !betValue || betValue < minBetValue
+              isBetting ||
+              bettingLocked ||
+              !roundId ||
+              !betValue ||
+              betValue < minBetValue
             }
             type="button"
             size="lg"
-            className="bg-linear-to-r cursor-pointer from-blue-500 to-cyan-400 text-white shadow-[0_0_16px_rgba(59,130,246,0.45)] hover:brightness-110"
+            aria-busy={isBetting}
+            className="bg-linear-to-r min-w-38 cursor-pointer from-blue-500 to-cyan-400 text-white shadow-[0_0_16px_rgba(59,130,246,0.45)] hover:brightness-110 disabled:cursor-not-allowed"
+            onClick={handleBet}
           >
-            Apostar
+            {isBetting ? (
+              <span className="inline-flex items-center gap-2">
+                <svg
+                  className="size-4 shrink-0 animate-spin"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-90"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                Apostando…
+              </span>
+            ) : (
+              "Apostar"
+            )}
           </Button>
           <Button
             type="button"
