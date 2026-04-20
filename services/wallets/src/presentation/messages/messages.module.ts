@@ -8,6 +8,9 @@ import { ValidateBetConsumerService } from "./wallets/validate-bet";
 import { AddGainConsumerService } from "./wallets/add-gain";
 
 import { AddGainUseCase } from "@/application/use-cases/wallets/add-gain";
+import { AddLostConsumerService } from "./wallets/add-lost";
+
+import { AddLostUseCase } from "@/application/use-cases/wallets/add-lost";
 
 @Module({
   imports: [
@@ -26,7 +29,11 @@ import { AddGainUseCase } from "@/application/use-cases/wallets/add-gain";
       },
     ]),
   ],
-  controllers: [ValidateBetConsumerService, AddGainConsumerService],
-  providers: [HasEnoughBalanceUseCase, AddGainUseCase],
+  controllers: [
+    ValidateBetConsumerService,
+    AddGainConsumerService,
+    AddLostConsumerService,
+  ],
+  providers: [HasEnoughBalanceUseCase, AddGainUseCase, AddLostUseCase],
 })
 export class MessagesModule {}

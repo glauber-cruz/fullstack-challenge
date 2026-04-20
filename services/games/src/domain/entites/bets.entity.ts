@@ -57,6 +57,10 @@ export class Bet {
     return this.props.status;
   }
 
+  set status(status: BetStatus) {
+    this.props.status = status;
+  }
+
   get processingStatus() {
     return this.props.processingStatus;
   }
@@ -82,6 +86,11 @@ export class Bet {
     this.props.status = BetStatus.CASHED_OUT;
     
     this.props.cashoutMultiplier = cashoutMultiplier;
+    this.props.processingStatus = BetProcessingStatus.COMPLETED;
+  }
+
+  lose() {
+    this.props.status = BetStatus.LOST;
     this.props.processingStatus = BetProcessingStatus.COMPLETED;
   }
 

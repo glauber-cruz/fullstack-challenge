@@ -22,23 +22,7 @@ import { GetBetsMeQueryHandler } from "@/infrastructure/query-handler/bets/get-m
 import { FetchRoundsHistoryQueryHandler } from "@/infrastructure/query-handler/rounds/fetch-history";
 
 @Module({
-  imports: [
-    RepositoryModule,
-    GuardsModule,
-    ClientsModule.register([
-      {
-        name: "WALLETS_RMQ_CLIENT",
-        transport: Transport.RMQ,
-        options: {
-          urls: [process.env.RABBITMQ_URL ?? ""],
-          queue: "wallets_queue",
-          queueOptions: {
-            durable: false,
-          },
-        },
-      },
-    ]),
-  ],
+  imports: [RepositoryModule, GuardsModule],
   controllers: [
     GamesController,
     BetsCreateController,

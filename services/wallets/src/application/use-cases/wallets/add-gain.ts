@@ -19,7 +19,7 @@ export class AddGainUseCase {
     const wallet = await this.walletsRepository.findByUserId(input.userId);
     if (!wallet) throw new NotFoundException("Wallet not found");
 
-    wallet.addGain(input.gainInCents);
-    await this.walletsRepository.save(wallet);
+    wallet.gain(input.gainInCents);
+    await this.walletsRepository.update(wallet);
   }
 }

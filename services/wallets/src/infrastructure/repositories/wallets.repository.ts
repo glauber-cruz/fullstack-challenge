@@ -9,6 +9,13 @@ import { WalletsMapper } from "../mappers/wallets.mapper";
 export class WalletsRepositoryImpl implements WalletsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
+  async findByIds(ids: string[]): Promise<Wallet[]> {
+    const wallets = await this.prisma.wallets.findMany({
+      where: { id: { in: ids } },
+    });
+    return wallets.map(WalletsMapper.toEntity);
+  }
+
   async userHasWallet(userId: string): Promise<boolean> {
     const wallet = await this.prisma.wallets.findFirst({
       where: { userId },
@@ -30,10 +37,21 @@ export class WalletsRepositoryImpl implements WalletsRepository {
     });
   }
 
-  async save(wallet: Wallet): Promise<void> {
+  async update(wallet: Wallet): Promise<void> {
     await this.prisma.wallets.update({
       where: { id: wallet.id },
       data: WalletsMapper.toPrismaUpdate(wallet),
     });
+  }
+
+  async updateMany(wallets: Wallet[]): Promise<void> {
+    await this.prisma.$transaction(
+      wallets.map((wallet) =>
+        this.prisma.wallets.update({
+          where: { id: wallet.id },
+          data: WalletsMapper.toPrismaUpdate(wallet),
+        }),
+      ),
+    );
   }
 }

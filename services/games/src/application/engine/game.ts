@@ -7,6 +7,8 @@ import { CreateRoundUseCase } from "../use-cases/rounds/create";
 import { RunRoundUseCase } from "../use-cases/rounds/run";
 import { EndRoundUseCase } from "../use-cases/rounds/end";
 
+import { LoseNotCashoutBetsUseCase } from "../use-cases/bets/lose-not-cashout-bets";
+
 // Como fiquei sem tempo a engine vai ser um singeliton que roda em memoria, então esse código é
 // resenha em nuvem KKKKKK mas serve como base, uma boa seria integrar ele com redis pra ter
 // persistencia.
@@ -18,6 +20,7 @@ export class GameEngine implements OnModuleInit {
     private readonly runRoundUseCase: RunRoundUseCase,
     private readonly endRoundUseCase: EndRoundUseCase,
     private readonly redisService: RedisService,
+    private readonly loseNotCashoutBetsUseCase: LoseNotCashoutBetsUseCase,
   ) {}
 
   private readonly countdownSeconds = 10;
@@ -101,6 +104,7 @@ export class GameEngine implements OnModuleInit {
 
   private async endRound(roundId: string) {
     await this.endRoundUseCase.execute(roundId);
+    await this.loseNotCashoutBetsUseCase.execute(roundId);
     await this.redisService.getClient().del(`round:${roundId}:multiplier`);
   }
 }

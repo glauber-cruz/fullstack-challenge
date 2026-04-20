@@ -3,7 +3,9 @@ import { PrismaService } from "../databases/prisma.service";
 
 import type { BetsRepository } from "../../domain/repositories/bets.repository";
 import { Bet } from "@/domain/entites/bets.entity";
+
 import { BetsMapper } from "../mappers/bets.mapper";
+import { BetStatus } from "@/domain/enums/bet";
 
 @Injectable()
 export class BetsRepositoryImpl implements BetsRepository {
@@ -14,6 +16,22 @@ export class BetsRepositoryImpl implements BetsRepository {
       where: { id },
     });
     return row ? BetsMapper.toEntity(row) : null;
+  }
+
+  async findNotCashoutByRoundId(
+    roundId: string,
+    perPage: number,
+    page: number,
+  ) {
+    const row = await this.prisma.bets.findMany({
+      where: {
+        roundId,
+        status: BetStatus.PENDING,
+      },
+      skip: (page - 1) * perPage,
+      take: perPage,
+    });
+    return row.map(BetsMapper.toEntity);
   }
 
   async findByUserAndRound(userId: string, roundId: string) {
@@ -37,5 +55,16 @@ export class BetsRepositoryImpl implements BetsRepository {
       data: BetsMapper.toPrismaUpdate(bet),
     });
     return BetsMapper.toEntity(row);
+  }
+
+  async updateMany(bets: Bet[]) {
+    await this.prisma.$transaction(
+      bets.map((bet) =>
+        this.prisma.bets.update({
+          where: { id: bet.id },
+          data: BetsMapper.toPrismaUpdate(bet),
+        }),
+      ),
+    );
   }
 }
