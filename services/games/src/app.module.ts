@@ -10,6 +10,8 @@ import { EngineModule } from "./application/engine/engine.module";
 import { EventsModule } from "./application/events/events.module";
 import { MessagesModule } from "./presentation/messages/messages.module";
 
+import { CacheModule } from "./infrastructure/cache/cache.module";
+
 @Module({
   imports: [
     DatabaseModule,
@@ -19,6 +21,7 @@ import { MessagesModule } from "./presentation/messages/messages.module";
     EngineModule,
     EventsModule,
     MessagesModule,
+    CacheModule,
   ],
 })
 export class AppModule {}

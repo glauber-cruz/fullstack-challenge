@@ -4,12 +4,16 @@ import { betsRepositoryToken } from "@/domain/repositories/bets.repository";
 import type { RoundsRepository } from "@/domain/repositories/rounds.repository";
 import { roundsRepositoryToken } from "@/domain/repositories/rounds.repository";
 
-import { BadRequestException, Inject, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  Inject,
+  InternalServerErrorException,
+  NotFoundException,
+} from "@nestjs/common";
 import { RoundStatus } from "@/domain/enums/rounds";
 
 type CashoutBetInput = {
   betId: string;
-  cashoutMultiplier: number;
 };
 
 export class CashoutBetUseCase {
@@ -24,23 +28,20 @@ export class CashoutBetUseCase {
     const bet = await this.betsRepository.findById(input.betId);
     if (!bet) throw new NotFoundException("Bet not found");
 
-    if(bet.cashedOutAt) throw new BadRequestException("Bet already cashed out");
+    if (bet.cashedOutAt)
+      throw new BadRequestException("Bet already cashed out");
     const round = await this.roundsRepository.findById(bet.roundId);
 
     if (!round) throw new NotFoundException("Round not found");
-    
+
     if (round.status !== RoundStatus.RUNNING)
       throw new BadRequestException("Round is not running to cashout bets");
 
-    let cashoutMultiplier: number;
-
-    try {
-      cashoutMultiplier = round.currentCrashMultiplier();
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
-
-    bet.cashout(cashoutMultiplier);
-    await this.betsRepository.update(bet);
+    if (!round.crashMultiplier)
+      throw new InternalServerErrorException("Internal server error");
+    
+    round.crashMultiplier;
+    bet.cashout();
+    const gain = await this.betsRepository.update(bet);
   }
 }
