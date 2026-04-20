@@ -15,6 +15,8 @@ example .env de cada um.
 pnpm docker:up
 ```
 
+Após tudo ser criado o site vai está rodando no localhost:3000
+
 Obs: se tiver no windows(problema no windows, quem iria imaginar :o) pode ter b.o com postgres dei uma pesquisada e esse comando no root resolve.
 
 ```
