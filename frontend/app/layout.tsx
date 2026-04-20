@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Geist } from "next/font/google";
+import { Toaster } from "sonner";
 
 import { cn } from "@/src/shared/lib/utils";
 import { AuthProvider } from "@/src/shared/contexts/auth";
@@ -19,6 +20,7 @@ export default function RootLayout({
     >
       <body>
         <AuthProvider>{children}</AuthProvider>
+        <Toaster richColors position="top-right" />
       </body>
     </html>
   );

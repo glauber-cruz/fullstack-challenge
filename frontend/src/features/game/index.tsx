@@ -17,21 +17,11 @@ import { useEffect, useState } from "react";
 export default function Game() {
   const { loading } = useAuthGuard();
   const [betValue, setBetValue] = useState<number>();
-  const [bets, setBets] = useState<betsCreatedPayload[]>([]);
   const {
     seconds: countdownSeconds,
     multiplier: currentMultiplier,
     roundId,
-    createdBet,
   } = useGameEvents();
-
-  useEffect(() => {
-    function handleCreatedBet() {
-      if (!createdBet) return;
-      setBets((prev) => [createdBet, ...prev]);
-    }
-    handleCreatedBet();
-  }, [createdBet]);
 
   if (loading) return <div>Loading...</div>;
 
@@ -54,7 +44,7 @@ export default function Game() {
           <HistoryPanel history={[]} />
         </div>
 
-        <BetsTable bets={bets} />
+        <BetsTable bets={[]} />
       </div>
     </main>
   );

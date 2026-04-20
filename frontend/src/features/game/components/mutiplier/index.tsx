@@ -10,8 +10,10 @@ import {
   CardTitle,
 } from "@/src/shared/components/ui/card";
 import { NumericFormat } from "react-number-format";
+import { Loader2 } from "lucide-react";
 import { GameService } from "@/src/services/game";
 import { KeycloakService } from "@/src/services/keycloack";
+import { toast } from "sonner";
 
 type MultiplierPanelProps = {
   multiplier: string;
@@ -34,19 +36,27 @@ export function MultiplierPanel({
   const [isBetting, setIsBetting] = useState(false);
   const [isCashout, setIsCashout] = useState(false);
 
-  const [betId, setBetId] = useState<string | null>(null);
+  const [currentBet, setCurrentBet] = useState<{
+    id: string;
+    roundId: string;
+  } | null>(null);
+  const hasBetInCurrentRound = Boolean(
+    currentBet && roundId && currentBet.roundId === roundId,
+  );
 
   const handleBet = async () => {
     const gameService = new GameService(new KeycloakService());
     if (!betValue || !roundId) return;
 
     const amountInCents = Math.round(Number(betValue) * 100);
-
     setIsBetting(true);
+
     try {
       const response = await gameService.createBet({ amountInCents, roundId });
-      console.log(response);
-      setBetId(response.id);
+      setCurrentBet({ id: response.id, roundId });
+      toast.success("Aposta realizada com sucesso!");
+    } catch {
+      toast.error("Erro ao realizar aposta!");
     } finally {
       setIsBetting(false);
     }
@@ -58,10 +68,14 @@ export function MultiplierPanel({
 
     setIsCashout(true);
     try {
-      if (!betId) return;
-      const response = await gameService.cashoutBet({ betId });
-      setBetId(null);
-      console.log(response);
+      if (!currentBet || currentBet.roundId !== roundId) return;
+      await gameService.cashoutBet({ betId: currentBet.id });
+      setCurrentBet(null);
+      toast.success("Cashout realizado com sucesso!");
+    } catch {
+      toast.error(
+        "Erro ao realizar cashout! não se preocupe, essa aposta não foi contabilizada",
+      );
     } finally {
       setIsCashout(false);
     }
@@ -123,26 +137,7 @@ export function MultiplierPanel({
           >
             {isBetting ? (
               <span className="inline-flex items-center gap-2">
-                <svg
-                  className="size-4 shrink-0 animate-spin"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-90"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
+                <Loader2 className="size-4 shrink-0 animate-spin" aria-hidden />
                 Apostando…
               </span>
             ) : (
@@ -151,7 +146,7 @@ export function MultiplierPanel({
           </Button>
           <Button
             onClick={handleCashout}
-            disabled={isCashout || !betId || !bettingLocked}
+            disabled={isCashout || !bettingLocked || !hasBetInCurrentRound}
             type="button"
             size="lg"
             variant="secondary"
