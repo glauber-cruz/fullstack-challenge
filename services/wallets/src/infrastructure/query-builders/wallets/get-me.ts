@@ -21,7 +21,7 @@ export class GetWalletMeQueryBuilder {
 
     return {
       ...wallet,
-      balance: Number(wallet.balance),
+      balance: Number(wallet.balance) / 100,
     };
   }
 }

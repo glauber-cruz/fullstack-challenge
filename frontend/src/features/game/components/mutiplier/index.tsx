@@ -21,6 +21,7 @@ type MultiplierPanelProps = {
   setBetValue: Dispatch<SetStateAction<number | undefined>>;
   bettingLocked?: boolean;
   roundId: string | null;
+  balance: number;
 };
 
 export function MultiplierPanel({
@@ -29,6 +30,7 @@ export function MultiplierPanel({
   setBetValue,
   bettingLocked = false,
   roundId,
+  balance,
 }: MultiplierPanelProps) {
   const maxBetValue = 1000;
   const minBetValue = 1;
@@ -46,7 +48,7 @@ export function MultiplierPanel({
 
   const handleBet = async () => {
     const gameService = new GameService(new KeycloakService());
-    if (!betValue || !roundId || hasBetInCurrentRound) return;
+    if (!betValue || !roundId || hasBetInCurrentRound || betValue > balance) return;
 
     const amountInCents = Math.round(Number(betValue) * 100);
     setIsBetting(true);
@@ -128,7 +130,8 @@ export function MultiplierPanel({
               bettingLocked ||
               !roundId ||
               !betValue ||
-              betValue < minBetValue
+              betValue < minBetValue ||
+              betValue > balance
             }
             type="button"
             size="lg"
