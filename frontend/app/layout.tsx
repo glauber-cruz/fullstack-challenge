@@ -12,7 +12,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt" className={cn("font-sans", geist.variable)}>
+    <html
+      lang="pt"
+      className={cn("font-sans", geist.variable)}
+      suppressHydrationWarning
+    >
       <body>
         <AuthProvider>{children}</AuthProvider>
       </body>
