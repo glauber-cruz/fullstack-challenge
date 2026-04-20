@@ -46,7 +46,7 @@ export function MultiplierPanel({
 
   const handleBet = async () => {
     const gameService = new GameService(new KeycloakService());
-    if (!betValue || !roundId) return;
+    if (!betValue || !roundId || hasBetInCurrentRound) return;
 
     const amountInCents = Math.round(Number(betValue) * 100);
     setIsBetting(true);
@@ -124,6 +124,7 @@ export function MultiplierPanel({
           <Button
             disabled={
               isBetting ||
+              hasBetInCurrentRound ||
               bettingLocked ||
               !roundId ||
               !betValue ||
@@ -140,6 +141,8 @@ export function MultiplierPanel({
                 <Loader2 className="size-4 shrink-0 animate-spin" aria-hidden />
                 Apostando…
               </span>
+            ) : hasBetInCurrentRound ? (
+              "Apostado"
             ) : (
               "Apostar"
             )}
