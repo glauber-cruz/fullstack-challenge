@@ -20,7 +20,7 @@ export class ValidateBetConsumerService {
   ) {}
 
   @UsePipes(new ZodValidationPipe(validateBetSchema))
-  @MessagePattern("validate_bet")
+  @MessagePattern("validate_bet_intent")
   async handleValidateBet(@Payload() data: ValidateBetSchema) {
     return await this.hasEnoughBalanceUseCase.execute(data);
   }
