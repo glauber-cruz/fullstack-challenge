@@ -20,7 +20,10 @@ export class Wallet {
     this.props = {
       ...props,
       id: this._id,
-      balance: props.balance ?? Amount.create(0),
+      // Acrescentei um valor inicial de 30 reais para testes, por falta de tempo vai ficar
+      // aqui no dominio mesmo, mas obviamente em algo mais sério seria um campo de crédito inicial
+      // Não sacavel ou algo assim.
+      balance: props.balance ?? Amount.create(30), 
     };
   }
 
