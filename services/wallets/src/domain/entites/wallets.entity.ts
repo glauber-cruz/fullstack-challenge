@@ -45,6 +45,7 @@ export class Wallet {
   }
 
   gain(gainInCents: number) {
+    if (gainInCents < 0) gainInCents = 0;
     this.props.balance = Amount.create(this.props.balance.cents + gainInCents);
   }
 
