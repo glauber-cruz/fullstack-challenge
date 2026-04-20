@@ -45,6 +45,7 @@ export function MultiplierPanel({
   const [currentBet, setCurrentBet] = useState<{
     id: string;
     roundId: string;
+    amount: number;
   } | null>(null);
   const hasBetInCurrentRound = Boolean(
     currentBet && roundId && currentBet.roundId === roundId,
@@ -65,7 +66,8 @@ export function MultiplierPanel({
 
     try {
       const response = await gameService.createBet({ amountInCents, roundId });
-      setCurrentBet({ id: response.id, roundId });
+      setCurrentBet({ id: response.id, roundId, amount: betValue });
+      setBalance((previousBalance) => previousBalance - betValue);
       toast.success("Aposta realizada com sucesso!");
     } catch {
       toast.error("Erro ao realizar aposta!");
@@ -82,8 +84,8 @@ export function MultiplierPanel({
     try {
       if (!currentBet || currentBet.roundId !== roundId) return;
       await gameService.cashoutBet({ betId: currentBet.id });
-      const gain = calculateGain(betValue);
-      setBalance((previousBalance) => previousBalance + gain);
+      const gain = calculateGain(currentBet.amount);
+      setBalance((previousBalance) => previousBalance + currentBet.amount + gain);
       setCurrentBet(null);
       toast.success("Cashout realizado com sucesso!");
     } catch {
