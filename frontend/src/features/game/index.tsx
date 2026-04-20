@@ -51,6 +51,7 @@ export default function Game() {
             betValue={betValue}
             setBetValue={setBetValue}
             bettingLocked={countdownSeconds === 0}
+            balance={balance}
           />
           <HistoryPanel history={[]} />
         </div>
