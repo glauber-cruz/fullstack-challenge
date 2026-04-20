@@ -34,4 +34,17 @@ export class WalletService {
 
     return response.json();
   }
+
+  async create(): Promise<void> {
+    const token = await this.getAccessToken();
+
+    const response = await fetch(`${this.baseUrl}/`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) throw new Error("Failed to create wallet");
+  }
 }

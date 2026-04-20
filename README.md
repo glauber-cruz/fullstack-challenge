@@ -17,7 +17,10 @@ pnpm docker:up
 
 Após tudo ser criado o site vai está rodando no localhost:3000
 
-Obs: se tiver no windows(problema no windows, quem iria imaginar :o) pode ter b.o com postgres dei uma pesquisada e esse comando no root resolve.
+Obs: Após finalizar o docker up espera alguns minutos pois as api's ainda vão provavelmente tá 
+rodando as migrations.
+
+Obs 2: se tiver no windows(problema no windows, quem iria imaginar :o) pode ter b.o com postgres dei uma pesquisada e esse comando no root resolve.
 
 ```
 (Get-Content "docker/postgres/init-databases.sh" -Raw).Replace("`r`n","`n") | Set-Content "docker/postgres/init-databases.sh" -NoNewline

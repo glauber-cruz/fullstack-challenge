@@ -1,6 +1,7 @@
 "use client";
 
 import { KeycloakService } from "@/src/services/keycloack";
+import { WalletService } from "@/src/services/wallet";
 import { useRouter } from "next/navigation";
 
 import { useEffect } from "react";
@@ -19,6 +20,14 @@ export default function Callback() {
 
         const keycloackService = new KeycloakService();
         await keycloackService.getTokens(code);
+        const walletService = new WalletService(keycloackService);
+
+        try {
+          await walletService.create();
+        } catch {
+          // Wallet may already exist for the authenticated user.
+          console.error("Failed to create wallet");
+        }
 
         router.push("/game");
       } catch {
