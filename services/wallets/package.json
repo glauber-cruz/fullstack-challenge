@@ -5,8 +5,10 @@
   "scripts": {
     "dev": "bun run --watch src/main.ts",
     "start": "bun run src/main.ts",
-    "test": "bun test tests/unit",
-    "test:e2e": "bun test tests/e2e"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:unit": "vitest run tests/unit",
+    "test:e2e": "vitest run tests/e2e"
   },
   "engines": {
     "node": ">=20"
