@@ -13,7 +13,7 @@ import { ValidateBetConsumerService } from "./wallets/validate-bet";
         transport: Transport.RMQ,
         options: {
           urls: [process.env.RABBITMQ_URL ?? ""],
-          queue: "bets_queue",
+          queue: "wallets_queue",
           queueOptions: {
             durable: false,
           },
