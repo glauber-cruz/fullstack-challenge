@@ -8,6 +8,7 @@ import { WebsocketsModule } from "./presentation/web-sockets/websockets.module";
 import { EngineModule } from "./application/engine/engine.module";
 
 import { EventsModule } from "./application/events/events.module";
+import { MessagesModule } from "./presentation/messages/messages.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { EventsModule } from "./application/events/events.module";
     WebsocketsModule,
     EngineModule,
     EventsModule,
+    MessagesModule,
   ],
 })
 export class AppModule {}

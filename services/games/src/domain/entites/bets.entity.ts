@@ -61,6 +61,10 @@ export class Bet {
     return this.props.processingStatus;
   }
 
+  set processingStatus(status: BetProcessingStatus) {
+    this.props.processingStatus = status;
+  }
+
   get cashedOutAt() {
     return this.props.cashedOutAt;
   }
