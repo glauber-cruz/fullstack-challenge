@@ -9,6 +9,7 @@ import z from "zod";
 const validateBetSchema = z.object({
   userId: z.string(),
   intendedSpendInCents: z.int().min(100).max(100_000),
+  betId: z.string(),
 });
 
 type ValidateBetSchema = z.infer<typeof validateBetSchema>;

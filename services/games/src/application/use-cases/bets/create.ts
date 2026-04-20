@@ -58,10 +58,11 @@ export class CreateBetUseCase {
     const bet = Bet.create({ userId: user.id, roundId: round.id, amount });
 
     await this.betsRepository.create(bet);
-    console.log("bet created", amount.cents, amount);
+
     this.walletsClient.emit("validate_bet_intent", {
       userId: user.id,
       intendedSpendInCents: amount.cents,
+      betId: bet.id,
     });
 
     this.eventBus.emit("bets:created", {
