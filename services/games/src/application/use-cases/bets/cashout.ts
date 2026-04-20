@@ -36,14 +36,7 @@ export class CashoutBetUseCase {
     const bet = await this.betsRepository.findById(input.betId);
     if (!bet) throw new NotFoundException("Bet not found");
 
-    if (bet.cashedOutAt)
-      throw new BadRequestException("Bet already cashed out");
-
-    if (bet.processingStatus !== BetProcessingStatus.COMPLETED)
-      throw new BadRequestException("Bet is not completed to cashout");
-
     const round = await this.roundsRepository.findById(bet.roundId);
-
     if (!round) throw new NotFoundException("Round not found");
 
     if (round.status !== RoundStatus.RUNNING)
@@ -64,7 +57,12 @@ export class CashoutBetUseCase {
     if (!cashoutMultiplier)
       throw new InternalServerErrorException("Internal server error");
 
-    bet.cashout(cashoutMultiplier);
+    try {
+      bet.cashout(cashoutMultiplier);
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+
     const gainInCents = Math.floor(bet.amount.cents * cashoutMultiplier);
 
     this.walletsClient.emit("add_gain", {

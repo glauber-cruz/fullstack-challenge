@@ -5,8 +5,10 @@
   "scripts": {
     "dev": "bun run --watch src/main.ts",
     "start": "bun run src/main.ts",
-    "test": "bun test tests/unit",
-    "test:e2e": "bun test tests/e2e"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:unit": "vitest run tests/unit",
+    "test:e2e": "vitest run tests/e2e"
   },
   "engines": {
     "node": ">=20"
@@ -38,11 +40,19 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "@nestjs/testing": "^11.1.19",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/pg": "^8.20.0",
+    "@types/supertest": "^7.2.0",
+    "@vitest/coverage-v8": "^4.1.4",
     "bun-types": "latest",
     "dotenv": "^17.4.2",
     "prisma": "^7.7.0",
-    "typescript": "^5.8.3"
+    "supertest": "^7.2.2",
+    "typescript": "^5.8.3",
+    "unplugin-swc": "^1.5.9",
+    "vite-tsconfig-paths": "^6.1.1",
+    "vitest": "^4.1.4"
   }
 }

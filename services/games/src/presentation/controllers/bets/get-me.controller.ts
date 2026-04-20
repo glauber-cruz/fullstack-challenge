@@ -15,14 +15,13 @@ import {
   GetBetsMePresentation,
   GetBetsMeResponseDto,
 } from "@/presentation/dtos/bets/get-me.dto";
-import { GetBetsMeSchema } from "@/presentation/dtos/bets/get-me.dto";
 import { ZodValidationPipe } from "@/presentation/pipes/zod-validation.pipe";
 import { createZodDto } from "nestjs-zod";
 import z from "zod";
 
 export const getBetsMeSchema = z.object({
   nextCursor: z.string().optional(),
-  limit: z.number().int().min(1).max(100),
+  limit: z.coerce.number().int().min(1).max(100),
 });
 
 class GetBetsMeQuery extends createZodDto(getBetsMeSchema) {}
@@ -36,7 +35,7 @@ export class BetsGetMeController {
 
   @Get("me")
   @ApiOkResponse({ type: GetBetsMeResponseDto })
-  @UsePipes(new ZodValidationPipe(GetBetsMeSchema))
+  @UsePipes(new ZodValidationPipe(getBetsMeSchema))
   async handle(
     @Req() req: AuthenticatedRequest,
     @Query() query: GetBetsMeQuery,

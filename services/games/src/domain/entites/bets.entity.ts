@@ -82,6 +82,15 @@ export class Bet {
   }
 
   cashout(cashoutMultiplier: number) {
+    if(this.props.cashedOutAt)
+      throw new Error("Bet already cashed out");
+
+    if(this.props.status !== BetStatus.PENDING)
+      throw new Error("Bet is not pending to cashout");
+
+    if(this.props.processingStatus !== BetProcessingStatus.COMPLETED)
+      throw new Error("Bet is not completed to cashout");
+
     this.props.cashedOutAt = new Date();
     this.props.status = BetStatus.CASHED_OUT;
     
