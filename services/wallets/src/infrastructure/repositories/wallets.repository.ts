@@ -11,7 +11,7 @@ export class WalletsRepositoryImpl implements WalletsRepository {
 
   async findByIds(ids: string[]): Promise<Wallet[]> {
     const wallets = await this.prisma.wallets.findMany({
-      where: { id: { in: ids } },
+      where: { userId: { in: ids } },
     });
     return wallets.map(WalletsMapper.toEntity);
   }

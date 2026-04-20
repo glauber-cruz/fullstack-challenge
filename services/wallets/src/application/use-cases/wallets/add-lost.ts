@@ -18,9 +18,8 @@ export class AddLostUseCase {
   ) {}
 
   async execute(input: AddLostInput) {
-    const wallets = await this.walletsRepository.findByIds(
-      input.losts.map((lost) => lost.userId),
-    );
+    const ids = input.losts.map((lost) => lost.userId);
+    const wallets = await this.walletsRepository.findByIds(ids);
 
     const lostsMapper = new Map<string, number>(
       input.losts.map((lost) => [lost.userId, lost.lostInCents]),
