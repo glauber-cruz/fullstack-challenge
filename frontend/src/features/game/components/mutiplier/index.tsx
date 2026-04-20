@@ -30,7 +30,11 @@ export function MultiplierPanel({
 }: MultiplierPanelProps) {
   const maxBetValue = 1000;
   const minBetValue = 1;
+
   const [isBetting, setIsBetting] = useState(false);
+  const [isCashout, setIsCashout] = useState(false);
+
+  const [betId, setBetId] = useState<string | null>(null);
 
   const handleBet = async () => {
     const gameService = new GameService(new KeycloakService());
@@ -41,8 +45,25 @@ export function MultiplierPanel({
     setIsBetting(true);
     try {
       const response = await gameService.createBet({ amountInCents, roundId });
+      console.log(response);
+      setBetId(response.id);
     } finally {
       setIsBetting(false);
+    }
+  };
+
+  const handleCashout = async () => {
+    const gameService = new GameService(new KeycloakService());
+    if (!betValue || !roundId) return;
+
+    setIsCashout(true);
+    try {
+      if (!betId) return;
+      const response = await gameService.cashoutBet({ betId });
+      setBetId(null);
+      console.log(response);
+    } finally {
+      setIsCashout(false);
     }
   };
 
@@ -129,6 +150,8 @@ export function MultiplierPanel({
             )}
           </Button>
           <Button
+            onClick={handleCashout}
+            disabled={isCashout || !betId || !bettingLocked}
             type="button"
             size="lg"
             variant="secondary"

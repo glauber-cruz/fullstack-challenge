@@ -3,7 +3,11 @@ import { ClientsModule, Transport } from "@nestjs/microservices";
 
 import { RepositoryModule } from "@/infrastructure/repositories/repository.module";
 import { HasEnoughBalanceUseCase } from "@/application/use-cases/wallets/has-enough-balance";
+
 import { ValidateBetConsumerService } from "./wallets/validate-bet";
+import { AddGainConsumerService } from "./wallets/add-gain";
+
+import { AddGainUseCase } from "@/application/use-cases/wallets/add-gain";
 
 @Module({
   imports: [
@@ -22,7 +26,7 @@ import { ValidateBetConsumerService } from "./wallets/validate-bet";
       },
     ]),
   ],
-  controllers: [ValidateBetConsumerService],
-  providers: [HasEnoughBalanceUseCase],
+  controllers: [ValidateBetConsumerService, AddGainConsumerService],
+  providers: [HasEnoughBalanceUseCase, AddGainUseCase],
 })
 export class MessagesModule {}

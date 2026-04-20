@@ -29,4 +29,11 @@ export class WalletsRepositoryImpl implements WalletsRepository {
       data: WalletsMapper.toPrisma(wallet),
     });
   }
+
+  async save(wallet: Wallet): Promise<void> {
+    await this.prisma.wallets.update({
+      where: { id: wallet.id },
+      data: WalletsMapper.toPrismaUpdate(wallet),
+    });
+  }
 }

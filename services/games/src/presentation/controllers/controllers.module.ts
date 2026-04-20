@@ -15,6 +15,7 @@ import { RoundsGetVerifyByIdController } from "./rounds/get-verify-by-id.control
 
 import { RoundsFetchHistoryController } from "./rounds/fetch-history.controller";
 import { CreateBetUseCase } from "@/application/use-cases/bets/create";
+import { CashoutBetUseCase } from "@/application/use-cases/bets/cashout";
 
 import { GetOrCreateUserService } from "@/application/services/get-or-create-user.service";
 import { GetBetsMeQueryHandler } from "@/infrastructure/query-handler/bets/get-me";
@@ -52,6 +53,7 @@ import { FetchRoundsHistoryQueryHandler } from "@/infrastructure/query-handler/r
     CreateBetUseCase,
     GetBetsMeQueryHandler,
     FetchRoundsHistoryQueryHandler,
+    CashoutBetUseCase,
   ],
 })
 export class ControllersModule {}

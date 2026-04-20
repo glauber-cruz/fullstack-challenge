@@ -5,6 +5,10 @@ type CreateBetInput = {
   roundId: string;
 };
 
+type CashoutBetInput = {
+  betId: string;
+};
+
 export class GameService {
   constructor(private readonly keycloakService: KeycloakService) {}
   private readonly baseUrl = process.env.NEXT_PUBLIC_GAMES_URL;
@@ -20,6 +24,23 @@ export class GameService {
     const token = await this.getAccessToken();
 
     const response = await fetch(`${this.baseUrl}/bets`, {
+      method: "POST",
+      body: JSON.stringify(input),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) throw new Error("Failed to create bet");
+
+    return response.json();
+  }
+
+  async cashoutBet(input: CashoutBetInput) {
+    const token = await this.getAccessToken();
+
+    const response = await fetch(`${this.baseUrl}/bets/cashout`, {
       method: "POST",
       body: JSON.stringify(input),
       headers: {

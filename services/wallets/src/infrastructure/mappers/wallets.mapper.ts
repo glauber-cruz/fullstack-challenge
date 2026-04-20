@@ -21,4 +21,12 @@ export class WalletsMapper {
       balance: data.balance.cents,
     };
   }
+
+  static toPrismaUpdate(data: Wallet) {
+    return {
+      id: data.id,
+      userId: data.userId,
+      balance: data.balance.cents,
+    };
+  }
 }

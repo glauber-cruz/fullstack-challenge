@@ -1,7 +1,9 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import { EventBusService } from "../events/event-bus.service";
 
+import { RedisService } from "@/infrastructure/cache/redis.service";
 import { CreateRoundUseCase } from "../use-cases/rounds/create";
+
 import { RunRoundUseCase } from "../use-cases/rounds/run";
 import { EndRoundUseCase } from "../use-cases/rounds/end";
 
@@ -15,6 +17,7 @@ export class GameEngine implements OnModuleInit {
     private readonly createRoundUseCase: CreateRoundUseCase,
     private readonly runRoundUseCase: RunRoundUseCase,
     private readonly endRoundUseCase: EndRoundUseCase,
+    private readonly redisService: RedisService,
   ) {}
 
   private readonly countdownSeconds = 10;
@@ -67,10 +70,10 @@ export class GameEngine implements OnModuleInit {
 
   private async runRound(roundId: string, crashMultiplier: number) {
     await this.runRoundUseCase.execute(roundId);
-    await this.runRunning(crashMultiplier);
+    await this.runRunning(roundId, crashMultiplier);
   }
 
-  private async runRunning(crashMultiplier: number) {
+  private async runRunning(roundId: string, crashMultiplier: number) {
     let multiplier = 1;
 
     const interval = 100;
@@ -80,6 +83,11 @@ export class GameEngine implements OnModuleInit {
       await this.wait(interval);
 
       multiplier *= 1 + growthRate;
+
+      await this.redisService.getClient().set(
+        `round:${roundId}:multiplier`,
+        this.formatMultiplier(multiplier),
+      );
 
       this.emit("rounds:running", {
         multiplier: this.formatMultiplier(multiplier),
@@ -93,5 +101,6 @@ export class GameEngine implements OnModuleInit {
 
   private async endRound(roundId: string) {
     await this.endRoundUseCase.execute(roundId);
+    await this.redisService.getClient().del(`round:${roundId}:multiplier`);
   }
 }

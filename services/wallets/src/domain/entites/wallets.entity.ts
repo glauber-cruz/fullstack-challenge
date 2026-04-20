@@ -44,6 +44,10 @@ export class Wallet {
     return this.props.updatedAt;
   }
 
+  addGain(gainInCents: number) {
+    this.props.balance = Amount.create(this.props.balance.cents + gainInCents);
+  }
+
   static create(
     props: Optional<WalletProps, "id" | "balance" | "createdAt" | "updatedAt">,
   ) {

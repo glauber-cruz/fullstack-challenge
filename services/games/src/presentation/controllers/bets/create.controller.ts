@@ -6,7 +6,7 @@ import {
   UseGuards,
   UsePipes,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 
 import { AuthGuard } from "@/presentation/guards/auth.guard";
 import type { AuthenticatedRequest } from "@/presentation/guards/auth.guard";
@@ -15,6 +15,10 @@ import { z } from "zod";
 import { CreateBetUseCase } from "@/application/use-cases/bets/create";
 
 import { createZodDto, ZodValidationPipe } from "nestjs-zod";
+import {
+  CreateBetPresentation,
+  CreateBetResponseDto,
+} from "@/presentation/dtos/bets/create.dto";
 
 export const createBetSchema = z.object({
   roundId: z.uuid(),
@@ -31,12 +35,14 @@ export class BetsCreateController {
   constructor(private readonly createBetUseCase: CreateBetUseCase) {}
 
   @Post()
+  @ApiOkResponse({ type: CreateBetResponseDto })
   @UsePipes(new ZodValidationPipe(createBetSchema))
   async handle(@Req() req: AuthenticatedRequest, @Body() body: CreateBetBody) {
-    await this.createBetUseCase.execute({
+    const betId = await this.createBetUseCase.execute({
       user: req.user,
       roundId: body.roundId,
       amountInCents: body.amountInCents,
     });
+    return CreateBetPresentation.toHTTP({ id: betId });
   }
 }

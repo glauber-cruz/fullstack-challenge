@@ -77,9 +77,12 @@ export class Bet {
     return this.props.updatedAt;
   }
 
-  cashout() {
+  cashout(cashoutMultiplier: number) {
     this.props.cashedOutAt = new Date();
     this.props.status = BetStatus.CASHED_OUT;
+    
+    this.props.cashoutMultiplier = cashoutMultiplier;
+    this.props.processingStatus = BetProcessingStatus.COMPLETED;
   }
 
   static create(

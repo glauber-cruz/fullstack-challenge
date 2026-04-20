@@ -9,19 +9,27 @@ import {
   Inject,
   InternalServerErrorException,
   NotFoundException,
+  Injectable,
 } from "@nestjs/common";
 import { RoundStatus } from "@/domain/enums/rounds";
+import { RedisService } from "@/infrastructure/cache/redis.service";
+import { ClientProxy } from "@nestjs/microservices";
+import { BetProcessingStatus } from "@/domain/enums/bet";
 
 type CashoutBetInput = {
   betId: string;
 };
 
+@Injectable()
 export class CashoutBetUseCase {
   constructor(
     @Inject(betsRepositoryToken)
     private readonly betsRepository: BetsRepository,
     @Inject(roundsRepositoryToken)
     private readonly roundsRepository: RoundsRepository,
+    private readonly redisService: RedisService,
+    @Inject("WALLETS_RMQ_CLIENT")
+    private readonly walletsClient: ClientProxy,
   ) {}
 
   async execute(input: CashoutBetInput) {
@@ -30,6 +38,10 @@ export class CashoutBetUseCase {
 
     if (bet.cashedOutAt)
       throw new BadRequestException("Bet already cashed out");
+
+    if (bet.processingStatus !== BetProcessingStatus.COMPLETED)
+      throw new BadRequestException("Bet is not completed to cashout");
+
     const round = await this.roundsRepository.findById(bet.roundId);
 
     if (!round) throw new NotFoundException("Round not found");
@@ -39,9 +51,27 @@ export class CashoutBetUseCase {
 
     if (!round.crashMultiplier)
       throw new InternalServerErrorException("Internal server error");
-    
-    round.crashMultiplier;
-    bet.cashout();
-    const gain = await this.betsRepository.update(bet);
+
+    const currentMultiplier = await this.redisService
+      .getClient()
+      .get(`round:${round.id}:multiplier`);
+
+    if (!currentMultiplier)
+      throw new InternalServerErrorException("Internal server error");
+
+    const cashoutMultiplier = Number(currentMultiplier);
+
+    if (!cashoutMultiplier)
+      throw new InternalServerErrorException("Internal server error");
+
+    bet.cashout(cashoutMultiplier);
+    const gainInCents = Math.floor(bet.amount.cents * cashoutMultiplier);
+
+    this.walletsClient.emit("add_gain", {
+      userId: bet.userId,
+      gainInCents,
+    });
+
+    await this.betsRepository.update(bet);
   }
 }

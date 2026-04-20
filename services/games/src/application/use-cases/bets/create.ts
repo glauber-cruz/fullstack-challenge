@@ -73,5 +73,7 @@ export class CreateBetUseCase {
       roundId: round.id,
       amount: amount.toReais().toString(),
     });
+
+    return bet.id;
   }
 }
