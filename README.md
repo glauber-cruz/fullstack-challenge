@@ -15,6 +15,12 @@ example .env de cada um.
 pnpm docker:up
 ```
 
+Obs: se tiver no windows(problema no windows, quem iria imaginar :o) pode ter b.o com postgres dei uma pesquisada e esse comando no root resolve.
+
+```
+(Get-Content "docker/postgres/init-databases.sh" -Raw).Replace("`r`n","`n") | Set-Content "docker/postgres/init-databases.sh" -NoNewline
+```
+
 # Referencias que usei 
 
 Como nunca tinha usado um tive que fazer algumas pesquisas e testes.
