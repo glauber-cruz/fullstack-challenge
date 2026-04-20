@@ -50,7 +50,5 @@ export class GameService {
     });
 
     if (!response.ok) throw new Error("Failed to create bet");
-
-    return response.json();
   }
 }

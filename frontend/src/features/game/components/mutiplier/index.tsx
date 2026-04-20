@@ -22,6 +22,8 @@ type MultiplierPanelProps = {
   bettingLocked?: boolean;
   roundId: string | null;
   balance: number;
+  setBalance: Dispatch<SetStateAction<number>>;
+  currentMultiplier: number | null;
 };
 
 export function MultiplierPanel({
@@ -31,6 +33,8 @@ export function MultiplierPanel({
   bettingLocked = false,
   roundId,
   balance,
+  setBalance,
+  currentMultiplier,
 }: MultiplierPanelProps) {
   const maxBetValue = 1000;
   const minBetValue = 1;
@@ -46,9 +50,15 @@ export function MultiplierPanel({
     currentBet && roundId && currentBet.roundId === roundId,
   );
 
+  function calculateGain(betValue: number) {
+    if (!currentMultiplier) return 0;
+    return betValue * currentMultiplier;
+  }
+
   const handleBet = async () => {
     const gameService = new GameService(new KeycloakService());
-    if (!betValue || !roundId || hasBetInCurrentRound || betValue > balance) return;
+    if (!betValue || !roundId || hasBetInCurrentRound || betValue > balance)
+      return;
 
     const amountInCents = Math.round(Number(betValue) * 100);
     setIsBetting(true);
@@ -72,6 +82,8 @@ export function MultiplierPanel({
     try {
       if (!currentBet || currentBet.roundId !== roundId) return;
       await gameService.cashoutBet({ betId: currentBet.id });
+      const gain = calculateGain(betValue);
+      setBalance((previousBalance) => previousBalance + gain);
       setCurrentBet(null);
       toast.success("Cashout realizado com sucesso!");
     } catch {
