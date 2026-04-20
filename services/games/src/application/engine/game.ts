@@ -58,17 +58,9 @@ export class GameEngine implements OnModuleInit {
   }
 
   private async prepareRound() {
-    const crashMultiplier = this.calculateCrashMultiplier();
-    const roundId = await this.createRoundUseCase.execute({ crashMultiplier });
+    const { roundId, crashMultiplier } =
+      await this.createRoundUseCase.execute();
     return { roundId, crashMultiplier };
-  }
-
-  private calculateCrashMultiplier() {
-    const houseEdge = 0.01;
-    const r = Math.random();
-
-    const crash = (1 / (1 - r)) * (1 - houseEdge);
-    return Math.min(100, Math.max(1, Number(crash.toFixed(2))));
   }
 
   private async runRound(roundId: string, crashMultiplier: number) {
@@ -87,10 +79,9 @@ export class GameEngine implements OnModuleInit {
 
       multiplier *= 1 + growthRate;
 
-      await this.redisService.getClient().set(
-        `round:${roundId}:multiplier`,
-        this.formatMultiplier(multiplier),
-      );
+      await this.redisService
+        .getClient()
+        .set(`round:${roundId}:multiplier`, this.formatMultiplier(multiplier));
 
       this.emit("rounds:running", {
         multiplier: this.formatMultiplier(multiplier),

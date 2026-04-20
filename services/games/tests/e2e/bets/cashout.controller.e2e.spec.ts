@@ -204,7 +204,7 @@ describe("BetsCashoutController (e2e)", () => {
   it("should fail when round has no crash multiplier", async () => {
     roundsRepositoryMock.findById.mockResolvedValueOnce(
       makeRound({
-        crashMultiplier: undefined,
+        crashMultiplier: 0,
       }),
     );
 

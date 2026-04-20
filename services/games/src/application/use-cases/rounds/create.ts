@@ -6,10 +6,6 @@ import { roundsRepositoryToken } from "@/domain/repositories/rounds.repository";
 
 import { Inject, Injectable } from "@nestjs/common";
 
-type CreateRoundInput = {
-  crashMultiplier: number;
-};
-
 @Injectable()
 export class CreateRoundUseCase {
   constructor(
@@ -17,13 +13,12 @@ export class CreateRoundUseCase {
     private readonly roundsRepository: RoundsRepository,
   ) {}
 
-  async execute(input: CreateRoundInput) {
+  async execute() {
     const round = Round.create({
-      crashMultiplier: input.crashMultiplier,
       status: RoundStatus.PENDING,
     });
     await this.roundsRepository.create(round);
 
-    return round.id;
+    return { roundId: round.id, crashMultiplier: round.crashMultiplier };
   }
 }

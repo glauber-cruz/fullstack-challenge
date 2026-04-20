@@ -5,7 +5,7 @@ import { RoundStatus } from "../enums/rounds";
 export type RoundProps = {
   id: string;
   status: RoundStatus;
-  crashMultiplier?: number;
+  crashMultiplier: number;
   startAt?: Date;
   endedAt?: Date;
   createdAt?: Date;
@@ -21,6 +21,7 @@ export class Round {
     this.props = {
       ...props,
       id: this._id,
+      crashMultiplier: props.crashMultiplier ?? this.calculateCrashMultiplier(),
     };
   }
 
@@ -58,6 +59,14 @@ export class Round {
 
     this.props.status = RoundStatus.RUNNING;
     this.props.startAt = new Date();
+  }
+
+  calculateCrashMultiplier() {
+    const houseEdge = 0.01;
+    const r = Math.random();
+
+    const crash = (1 / (1 - r)) * (1 - houseEdge);
+    return Math.min(100, Math.max(1, Number(crash.toFixed(2))));
   }
 
   end() {
