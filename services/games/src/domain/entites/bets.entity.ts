@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Optional } from "../core/optional";
 
 import { Amount } from "../value-object/amount";
+import { BetProcessingStatus, BetStatus } from "../enums/bet";
 
 export type BetProps = {
   id: string;
@@ -10,6 +11,8 @@ export type BetProps = {
   amount: Amount;
   cashoutMultiplier?: number;
   cashedOutAt?: Date;
+  status: BetStatus;
+  processingStatus: BetProcessingStatus;
   createdAt?: Date;
   updatedAt?: Date;
 };
@@ -23,6 +26,10 @@ export class Bet {
     this.props = {
       ...props,
       id: this._id,
+      amount: props.amount ?? Amount.create(0),
+      status: props.status ?? BetStatus.PENDING,
+      processingStatus:
+        props.processingStatus ?? BetProcessingStatus.PROCESSING,
     };
   }
 
@@ -44,6 +51,14 @@ export class Bet {
 
   get cashoutMultiplier() {
     return this.props.cashoutMultiplier;
+  }
+
+  get status() {
+    return this.props.status;
+  }
+
+  get processingStatus() {
+    return this.props.processingStatus;
   }
 
   get cashedOutAt() {
@@ -71,6 +86,8 @@ export class Bet {
       | "cashedOutAt"
       | "createdAt"
       | "updatedAt"
+      | "status"
+      | "processingStatus"
     >,
   ) {
     return new Bet(props as BetProps);

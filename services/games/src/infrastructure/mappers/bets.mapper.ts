@@ -25,6 +25,7 @@ export class BetsMapper {
       amount: data.amount.cents,
       cashoutMultiplier: data.cashoutMultiplier,
       cashedOutAt: data.cashedOutAt,
+      
     };
   }
 
