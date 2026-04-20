@@ -13,6 +13,17 @@ enum RoundStatus {
   CRASHED
 }
 
+enum BetStatus {
+  PENDING
+  CASHED_OUT
+}
+
+enum BetProcessingStatus {
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
 model Users {
   id        String   @id @default(uuid())
   email     String?  @unique
@@ -40,6 +51,8 @@ model Bets {
   userId            String
   roundId           String
   amount            Decimal
+  status            BetStatus @default(PENDING)
+  processingStatus  BetProcessingStatus @default(PROCESSING)
   cashoutMultiplier Float?
   cashedOutAt       DateTime?
   createdAt         DateTime  @default(now())
