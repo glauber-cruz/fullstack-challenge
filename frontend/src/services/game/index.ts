@@ -15,7 +15,9 @@ export class GameService {
 
   async getAccessToken() {
     const valid = await this.keycloakService.ensureValidToken();
-    if (!valid) throw new Error("Invalid token");
+    if (!valid) {
+      return (window.location.href = "/");
+    }
     const token = this.keycloakService.getAccessToken();
     return token;
   }
