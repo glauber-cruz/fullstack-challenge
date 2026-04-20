@@ -48,6 +48,9 @@ export function useGameEvents() {
 
     return () => {
       socket.off("rounds:countdown", onCountdown);
+      socket.off("rounds:running", onRunning);
+      socket.off("bets:created", onBetsCreated);
+      socket.disconnect();
     };
   }, []);
 

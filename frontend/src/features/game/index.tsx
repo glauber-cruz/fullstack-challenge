@@ -6,13 +6,10 @@ import { GameHeader } from "@/src/features/game/components/header";
 import { HistoryPanel } from "@/src/features/game/components/history";
 import { MultiplierPanel } from "@/src/features/game/components/mutiplier";
 
-import {
-  betsCreatedPayload,
-  useGameEvents,
-} from "@/src/features/game/hooks/use-game-events";
+import { useGameEvents } from "@/src/features/game/hooks/use-game-events";
 
 import { useAuthGuard } from "@/src/shared/hooks/use-auth-guard";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function Game() {
   const { loading } = useAuthGuard();
