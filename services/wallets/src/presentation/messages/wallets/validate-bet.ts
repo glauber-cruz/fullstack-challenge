@@ -1,5 +1,5 @@
 import { Controller, UsePipes } from "@nestjs/common";
-import { MessagePattern, Payload } from "@nestjs/microservices";
+import { EventPattern, Payload } from "@nestjs/microservices";
 
 import { ZodValidationPipe } from "nestjs-zod";
 
@@ -20,8 +20,8 @@ export class ValidateBetConsumerService {
   ) {}
 
   @UsePipes(new ZodValidationPipe(validateBetSchema))
-  @MessagePattern("validate_bet_intent")
+  @EventPattern("validate_bet_intent")
   async handleValidateBet(@Payload() data: ValidateBetSchema) {
-    return await this.hasEnoughBalanceUseCase.execute(data);
+    await this.hasEnoughBalanceUseCase.execute(data);
   }
 }

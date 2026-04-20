@@ -12,8 +12,6 @@ import {
 } from "@nestjs/common";
 import { ClientProxy } from "@nestjs/microservices";
 import { KeycloakUser } from "@/infrastructure/types/keycloack";
-
-import { firstValueFrom } from "rxjs";
 import { GetOrCreateUserService } from "../../services/get-or-create-user.service";
 
 import { Bet } from "@/domain/entites/bets.entity";
@@ -60,12 +58,11 @@ export class CreateBetUseCase {
     const bet = Bet.create({ userId: user.id, roundId: round.id, amount });
 
     await this.betsRepository.create(bet);
-    await firstValueFrom(
-      this.walletsClient.send("validate_bet_intent", {
-        userId: user.id,
-        intendedSpendInCents: amount.cents,
-      }),
-    );
+    console.log("bet created", amount.cents, amount);
+    this.walletsClient.emit("validate_bet_intent", {
+      userId: user.id,
+      intendedSpendInCents: amount.cents,
+    });
 
     this.eventBus.emit("bets:created", {
       id: bet.id,

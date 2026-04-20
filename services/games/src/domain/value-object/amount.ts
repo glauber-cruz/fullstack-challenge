@@ -14,10 +14,6 @@ export class Amount {
     if (!Number.isInteger(value)) {
       throw new Error("Amount must be in cents (integer value)");
     }
-
-    if (value <= 0) {
-      throw new Error("Amount must be greater than zero");
-    }
   }
 
   get cents() {
