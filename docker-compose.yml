@@ -157,14 +157,14 @@ services:
   # ---------------------------------------------------------------------------
   # Frontend
   # ---------------------------------------------------------------------------
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3000:3000"
-  #   env_file:
-  #     - ./frontend/.env
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./frontend/.env
 
 volumes:
   postgres_data:
