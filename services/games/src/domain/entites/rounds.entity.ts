@@ -62,11 +62,21 @@ export class Round {
   }
 
   calculateCrashMultiplier() {
-    const houseEdge = 0.01;
-    const r = Math.random();
+    // 1% de vantagem pra casa... hmm talvez a gente devesse ser mais ladrãos né kakaka
+    const houseEdge = 0.99;
+    const maxRandomNumber = 1;
 
-    const crash = (1 / (1 - r)) * (1 - houseEdge);
-    return Math.min(100, Math.max(1, Number(crash.toFixed(2))));
+    const randomNumber = Math.random();
+    const randomNumberDistanceFromZero = maxRandomNumber - randomNumber;
+
+    const crash = (1 / randomNumberDistanceFromZero) * houseEdge;
+    let formattedCrash = Number(crash.toFixed(2));
+
+    const maxCrashMultiplier = 100;
+    const minCrashMultiplier = 1;
+
+    if(formattedCrash > maxCrashMultiplier) formattedCrash = maxCrashMultiplier;
+    return Math.max(minCrashMultiplier, formattedCrash)
   }
 
   end() {
