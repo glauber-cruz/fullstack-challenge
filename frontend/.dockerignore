@@ -1,0 +1,19 @@
+node_modules
+.next
+coverage
+*.log
+.turbo
+.git
+.gitignore
+
+# Tests
+tests/
+**/*.test.ts
+**/*.spec.ts
+
+# Env files
+.env
+.env.*
+
+# Docs
+README.md

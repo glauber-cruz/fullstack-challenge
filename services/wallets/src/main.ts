@@ -7,6 +7,8 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { MicroserviceOptions, Transport } from "@nestjs/microservices";
 
 async function bootstrap(): Promise<void> {
+  const rabbitMqUrl =
+    process.env.RABBITMQ_URL ?? "amqp://admin:admin@rabbitmq:5672";
   const app = await NestFactory.create(AppModule);
 
   app.enableCors({
@@ -16,7 +18,7 @@ async function bootstrap(): Promise<void> {
   app.connectMicroservice<MicroserviceOptions>({
     transport: Transport.RMQ,
     options: {
-      urls: [process.env.RABBITMQ_URL ?? ""],
+      urls: [rabbitMqUrl],
       queue: "wallets_queue",
       queueOptions: {
         durable: false,
